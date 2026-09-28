@@ -1334,11 +1334,16 @@ tr.zona-row:hover { background-color: var(--accent); }
               </div>
             </div>
 
-            <!-- Context Actions: Open, Rename, Replace, Delete -->
-            <div class="flex items-center gap-1.5 flex-shrink-0 self-end sm:self-center">
+            <!-- Context Actions: Open, Download, Rename, Replace, Delete -->
+            <div class="flex items-center gap-1.5 flex-shrink-0 self-end sm:self-center flex-wrap sm:flex-nowrap">
               <button onclick="window.openFileItem('${f.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-1 cursor-pointer shadow-xs" title="Buka data ke dashboard">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                 Open
+              </button>
+
+              <button onclick="window.downloadFileItem('${f.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors flex items-center gap-1 cursor-pointer" title="Unduh file Excel">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download
               </button>
 
               <button onclick="window.renameFileItem('${f.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors flex items-center gap-1 cursor-pointer" title="Ubah nama file">
@@ -1409,7 +1414,158 @@ tr.zona-row:hover { background-color: var(--accent); }
       }
     };
 
-    // 2. RENAME File Action
+    // 2. DOWNLOAD File Action
+    window.downloadFileItem = async function (id) {
+      showToast('Menyiapkan file untuk diunduh...');
+      try {
+        let dataset = null;
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient
+            .from('dashboard_kavling')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+          if (!error && data) {
+            dataset = {
+              id: data.id,
+              reportDate: data.report_date,
+              summary: data.summary,
+              zones: data.zones,
+              types: data.types,
+              siteplan: data.siteplan,
+              changelog: data.changelog,
+              fileUrl: data.file_url,
+              fileName: data.file_name
+            };
+          }
+        }
+
+        if (!dataset) {
+          const localList = getHistory();
+          dataset = localList.find(h => String(h.id) === String(id));
+        }
+
+        if (!dataset && currentDataset && String(currentActiveFileId) === String(id)) {
+          dataset = currentDataset;
+        }
+
+        if (!dataset) throw new Error('Data file tidak ditemukan.');
+
+        const baseFileName = (dataset.fileName || `kavling_${dataset.reportDate || 'export'}`).trim();
+        const fullFileName = baseFileName.toLowerCase().endsWith('.xlsx') ? baseFileName : `${baseFileName}.xlsx`;
+
+        // Strategy A: Jika terdapat file_url di Supabase Storage, unduh file aslinya
+        if (dataset.fileUrl && dataset.fileUrl.startsWith('http')) {
+          try {
+            const resp = await fetch(dataset.fileUrl);
+            if (resp.ok) {
+              const blob = await resp.blob();
+              const blobUrl = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = blobUrl;
+              a.download = fullFileName;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(blobUrl);
+              showToast(`File "${fullFileName}" berhasil diunduh!`);
+              return;
+            }
+          } catch (fetchErr) {
+            console.warn('Unduh via fileUrl gagal, mengekspor ulang dari data JSON:', fetchErr);
+          }
+        }
+
+        // Strategy B: Fallback / Rekonstruksi file Excel menggunakan SheetJS (XLSX)
+        if (typeof XLSX === 'undefined') {
+          throw new Error('Pustaka SheetJS (XLSX) tidak tersedia.');
+        }
+
+        const wb = XLSX.utils.book_new();
+
+        // Sheet 1: PROGRES ZONA (Data Kavling)
+        if (dataset.zones && Array.isArray(dataset.zones) && dataset.zones.length > 0) {
+          const zoneRows = dataset.zones.map((z, idx) => ({
+            'No': idx + 1,
+            'Zona': z.zona || '',
+            'Tipe': z.type || '',
+            'Acc Makam': z.accMakam || '',
+            'Stok Rencana': z.stokRencana || 0,
+            'Stok SPK': z.stokSPK || 0,
+            'Terjual': z.terjual || 0,
+            'Sisa Stok': z.sisaStok || 0,
+            'Funeral Ready': z.funeralReady || 0,
+            '% Ready': z.pctReady !== undefined ? z.pctReady : 0,
+            'Status': z.status || '',
+            'Kontraktor': z.kontraktor || '',
+            'Tgl Mulai': z.tglMulai || '',
+            'Tgl Selesai': z.tglSelesai || '',
+            'Aktual Progress (%)': z.aktualProgress || 0,
+            'Deviasi (%)': z.deviasi || 0,
+            'Keterangan': z.keterangan || ''
+          }));
+          const wsZones = XLSX.utils.json_to_sheet(zoneRows);
+          XLSX.utils.book_append_sheet(wb, wsZones, 'PROGRES ZONA');
+        }
+
+        // Sheet 2: REKAP TIPE
+        if (dataset.types) {
+          const typeRows = [];
+          if (dataset.types.summary && Array.isArray(dataset.types.summary)) {
+            dataset.types.summary.forEach(t => {
+              typeRows.push({
+                'Tipe': t.type || '',
+                'Stok Rencana': t.stokRencana || 0,
+                'Stok SPK': t.stokSPK || 0,
+                'Terjual': t.terjual || 0,
+                'Sisa Stok': t.sisaStok || 0,
+                'Funeral Ready': t.funeralReady || 0,
+                '% Ready': t.pct || 0,
+                'Target': t.target || 0,
+                'Selisih': t.selisih || 0
+              });
+            });
+          } else if (dataset.types.details && Array.isArray(dataset.types.details)) {
+            dataset.types.details.forEach(d => {
+              typeRows.push({
+                'Kode': d.code || '',
+                'Nama': d.name || '',
+                'Stok Rencana': d.stokRencana || 0,
+                'Stok SPK': d.stokSPK || 0,
+                'Terjual': d.terjual || 0,
+                'Sisa Stok': d.sisaStok || 0,
+                'Funeral Ready': d.funeralReady || 0,
+                '% Ready': d.pct || 0
+              });
+            });
+          }
+          if (typeRows.length > 0) {
+            const wsTypes = XLSX.utils.json_to_sheet(typeRows);
+            XLSX.utils.book_append_sheet(wb, wsTypes, 'REKAP TIPE');
+          }
+        }
+
+        // Sheet 3: CHANGELOG
+        if (dataset.changelog && Array.isArray(dataset.changelog) && dataset.changelog.length > 0) {
+          const logRows = dataset.changelog.map(c => ({
+            'Tanggal': c.date || '',
+            'Keterangan': c.desc || ''
+          }));
+          const wsLogs = XLSX.utils.json_to_sheet(logRows);
+          XLSX.utils.book_append_sheet(wb, wsLogs, 'CHANGELOG');
+        }
+
+        // Export & unduh file Excel
+        XLSX.writeFile(wb, fullFileName);
+        showToast(`File "${fullFileName}" berhasil diunduh!`);
+      } catch (err) {
+        console.error('Error download file:', err);
+        showToast('Gagal mengunduh file: ' + err.message, 4000);
+      }
+    };
+
+    // 3. RENAME File Action
     window.renameFileItem = async function (id) {
       const item = cachedFileList.find(f => String(f.id) === String(id));
       const currentName = item ? item.fileName : '';
@@ -1450,7 +1606,7 @@ tr.zona-row:hover { background-color: var(--accent); }
       }
     };
 
-    // 3. REPLACE File Action
+    // 4. REPLACE File Action
     window.triggerReplaceFile = function (id) {
       currentReplaceTargetId = id;
       document.getElementById('replaceFileInput').click();
@@ -1530,7 +1686,7 @@ tr.zona-row:hover { background-color: var(--accent); }
       }
     });
 
-    // 4. DELETE File Action
+    // 5. DELETE File Action
     window.deleteFileItem = async function (id) {
       const item = cachedFileList.find(f => String(f.id) === String(id));
       const fileName = item ? item.fileName : 'file ini';
