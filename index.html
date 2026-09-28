@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="id" class="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Progres Kavling Pemakaman 25HA</title>
-  
+
   <!-- Open Sans & JetBrains Mono Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
 
   <!-- Tailwind CSS v4 Browser CDN, SheetJS, Chart.js -->
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style type="text/tailwindcss">
     @import "tailwindcss";
 
@@ -217,28 +221,46 @@ tr.zona-row:hover { background-color: var(--accent); }
 /* Drop zone overlay */
 .drop-overlay { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; }
 .drop-overlay.active { display: flex; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,0.65); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 1rem; }
+.modal-overlay.active { display: flex; }
   </style>
 </head>
+
 <body class="min-h-screen antialiased selection:bg-primary selection:text-primary-foreground">
 
   <header class="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-3.5">
-          <div class="w-11 h-11 rounded-[var(--radius)] bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+          <div
+            class="w-11 h-11 rounded-[var(--radius)] bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" x2="21" y1="22" y2="22" />
+              <line x1="6" x2="6" y1="18" y2="11" />
+              <line x1="10" x2="10" y1="18" y2="11" />
+              <line x1="14" x2="14" y1="18" y2="11" />
+              <line x1="18" x2="18" y1="18" y2="11" />
+              <polygon points="12 2 20 7 4 7" />
+            </svg>
           </div>
           <div>
             <div class="flex items-center gap-2">
               <h1 class="text-lg sm:text-xl font-bold tracking-tight text-foreground">Progres Kavling Pemakaman</h1>
-              <span class="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full border border-border bg-accent text-accent-foreground">25 HA</span>
+              <span
+                class="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full border border-border bg-accent text-accent-foreground">25
+                HA</span>
             </div>
-            <p class="text-xs text-muted-foreground mt-0.5 font-medium">Monitoring operasional, ketersediaan unit &amp; SPK fisik</p>
+            <p class="text-xs text-muted-foreground mt-0.5 font-medium">Monitoring operasional, ketersediaan unit &amp;
+              SPK fisik</p>
           </div>
         </div>
 
         <div class="flex items-center gap-3">
-          <div class="hidden sm:flex items-center gap-2.5 text-xs font-mono border-r border-border pr-3.5" id="headerDateSection" style="display:none">
+          <div class="hidden sm:flex items-center gap-2.5 text-xs font-mono border-r border-border pr-3.5"
+            id="headerDateSection" style="display:none">
             <span class="flex items-center gap-1.5 text-muted-foreground font-medium">
               <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
               <span id="headerReportDate"></span>
@@ -247,17 +269,42 @@ tr.zona-row:hover { background-color: var(--accent); }
             <span class="text-muted-foreground" id="genDate"></span>
           </div>
 
-          <select id="historySelect" class="hidden text-xs font-mono bg-card border border-border rounded-[calc(var(--radius)-4px)] px-2.5 py-1.5 text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring" title="Riwayat Upload"></select>
+          <select id="historySelect"
+            class="hidden text-xs font-mono bg-card border border-border rounded-[calc(var(--radius)-4px)] px-2.5 py-1.5 text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
+            title="Riwayat Upload"></select>
 
-          <button id="uploadBtn" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-[calc(var(--radius)-4px)] text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer shadow-sm" title="Upload File Excel">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-            Upload Excel
+          <button id="openFileBtn"
+            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-[calc(var(--radius)-4px)] text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer shadow-sm"
+            title="Buka File Manager">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
+              <path d="M2 10h20" />
+            </svg>
+            Open File
           </button>
           <input type="file" id="excelFileInput" accept=".xlsx,.xls" class="hidden">
+          <input type="file" id="replaceFileInput" accept=".xlsx,.xls" class="hidden">
 
-          <button id="themeToggle" class="w-9 h-9 rounded-[calc(var(--radius)-4px)] border border-border bg-card flex items-center justify-center text-foreground hover:bg-accent transition-colors cursor-pointer" title="Toggle Light/Dark Theme">
-            <svg id="moonIcon" class="w-4 h-4 hidden dark:block text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-            <svg id="sunIcon" class="w-4 h-4 block dark:hidden text-amber-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <button id="themeToggle"
+            class="w-9 h-9 rounded-[calc(var(--radius)-4px)] border border-border bg-card flex items-center justify-center text-foreground hover:bg-accent transition-colors cursor-pointer"
+            title="Toggle Light/Dark Theme">
+            <svg id="moonIcon" class="w-4 h-4 hidden dark:block text-primary" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </svg>
+            <svg id="sunIcon" class="w-4 h-4 block dark:hidden text-amber-500" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2" />
+              <path d="M12 20v2" />
+              <path d="m4.93 4.93 1.41 1.41" />
+              <path d="m17.66 17.66 1.41 1.41" />
+              <path d="M2 12h2" />
+              <path d="M20 12h2" />
+              <path d="m6.34 17.66-1.41 1.41" />
+              <path d="m19.07 4.93-1.41 1.41" />
+            </svg>
           </button>
         </div>
       </div>
@@ -266,69 +313,115 @@ tr.zona-row:hover { background-color: var(--accent); }
 
   <div id="uploadScreen" class="min-h-[70vh] flex items-center justify-center">
     <div class="max-w-md w-full mx-auto text-center">
-      <div class="bg-card rounded-[var(--radius)] border-2 border-dashed border-border hover:border-primary/60 transition-colors p-10 cursor-pointer" id="dropZone">
+      <div
+        class="bg-card rounded-[var(--radius)] border-2 border-dashed border-border hover:border-primary/60 transition-colors p-10 cursor-pointer"
+        id="dropZone">
         <div class="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+            class="text-primary">
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+            <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+            <path d="M8 13h2" />
+            <path d="M14 13h2" />
+            <path d="M8 17h2" />
+            <path d="M14 17h2" />
+          </svg>
         </div>
-        <h2 class="text-lg font-bold text-foreground mb-2">Upload File Excel</h2>
-        <p class="text-sm text-muted-foreground mb-4">Drag & drop file .xlsx ke sini, atau klik untuk memilih file</p>
-        <p class="text-xs text-muted-foreground font-mono">Format: Dashboard Progres Kavling Pemakaman 25HA (.xlsx)</p>
+        <h2 class="text-lg font-bold text-foreground mb-2">Pilih File Excel</h2>
+        <p class="text-sm text-muted-foreground mb-3">Drag &amp; drop file .xlsx ke sini, atau klik untuk memilih file</p>
+        <p class="text-xs text-muted-foreground font-mono mb-4">Format: Dashboard Progres Kavling Pemakaman 25HA (.xlsx)</p>
+        <button id="screenOpenFileBtn" type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-[calc(var(--radius)-4px)] text-xs font-semibold bg-accent text-accent-foreground border border-border hover:bg-accent/80 transition-colors cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
+            <path d="M2 10h20" />
+          </svg>
+          Buka File Manager (Cloud)
+        </button>
       </div>
     </div>
   </div>
 
   <main id="dashboardContent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6" style="display:none">
-    
+
     <section id="kpiSection" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
-      <div class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+      <div
+        class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
         <div class="flex items-center justify-between text-muted-foreground mb-1">
           <span class="text-[11px] font-bold uppercase tracking-wider">Rencana</span>
-          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="7" height="7" x="3" y="3" rx="1" />
+            <rect width="7" height="7" x="14" y="3" rx="1" />
+            <rect width="7" height="7" x="14" y="14" rx="1" />
+            <rect width="7" height="7" x="3" y="14" rx="1" />
+          </svg>
         </div>
         <p class="text-2xl font-bold font-mono tracking-tight text-foreground" id="kpiRencana">—</p>
         <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">Total kavling</p>
       </div>
-      
-      <div class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+
+      <div
+        class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
         <div class="flex items-center justify-between text-muted-foreground mb-1">
           <span class="text-[11px] font-bold uppercase tracking-wider">SPK</span>
-          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/></svg>
+          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+            <path d="M12 11h4" />
+            <path d="M12 16h4" />
+          </svg>
         </div>
         <p class="text-2xl font-bold font-mono tracking-tight text-foreground" id="kpiSPK">—</p>
         <p class="text-[11px] text-muted-foreground mt-0.5 font-medium" id="kpiSPKPct"></p>
       </div>
-      
-      <div class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+
+      <div
+        class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
         <div class="flex items-center justify-between text-muted-foreground mb-1">
           <span class="text-[11px] font-bold uppercase tracking-wider">Terjual</span>
-          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
+            <path d="M12 18V6" />
+          </svg>
         </div>
         <p class="text-2xl font-bold font-mono tracking-tight text-foreground" id="kpiTerjual">—</p>
         <p class="text-[11px] text-muted-foreground mt-0.5 font-medium" id="kpiTerjualPct"></p>
       </div>
-      
-      <div class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+
+      <div
+        class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
         <div class="flex items-center justify-between text-muted-foreground mb-1">
           <span class="text-[11px] font-bold uppercase tracking-wider">Sisa Stok</span>
-          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M12 22V12"/></svg>
+          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+            <path d="M12 22V12" />
+          </svg>
         </div>
         <p class="text-2xl font-bold font-mono tracking-tight text-foreground" id="kpiSisa">—</p>
         <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">Belum terjual</p>
       </div>
-      
-      <div class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+
+      <div
+        class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
         <div class="flex items-center justify-between text-muted-foreground mb-1">
           <span class="text-[11px] font-bold uppercase tracking-wider">Funeral Ready</span>
-          <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
         </div>
         <p class="text-2xl font-bold font-mono tracking-tight text-emerald-500" id="kpiReady">—</p>
         <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">Siap pakai</p>
       </div>
-      
+
       <div class="bg-primary text-primary-foreground rounded-[var(--radius)] border border-primary p-4 shadow-sm">
         <div class="flex items-center justify-between opacity-90 mb-1">
           <span class="text-[11px] font-bold uppercase tracking-wider">% Ready</span>
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+            <polyline points="16 7 22 7 22 13" />
+          </svg>
         </div>
         <p class="text-2xl font-bold font-mono tracking-tight" id="kpiPctReady">—</p>
         <p class="text-[11px] opacity-80 mt-0.5 font-medium">dari total SPK</p>
@@ -336,11 +429,13 @@ tr.zona-row:hover { background-color: var(--accent); }
     </section>
 
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-      <div class="lg:col-span-3 bg-card rounded-[var(--radius)] border border-border p-5 flex flex-col justify-between shadow-sm">
+      <div
+        class="lg:col-span-3 bg-card rounded-[var(--radius)] border border-border p-5 flex flex-col justify-between shadow-sm">
         <div>
           <div class="flex items-center justify-between border-b border-border pb-3 mb-3">
             <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Status Zona</h3>
-            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-accent text-accent-foreground" id="statusTotalZona"></span>
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-accent text-accent-foreground"
+              id="statusTotalZona"></span>
           </div>
           <div class="space-y-2.5">
             <div class="flex items-center justify-between text-xs">
@@ -363,7 +458,7 @@ tr.zona-row:hover { background-color: var(--accent); }
             </div>
           </div>
         </div>
-        
+
         <div class="border-t border-border pt-4 mt-4">
           <div class="flex justify-between text-xs mb-1.5 font-medium">
             <span class="text-muted-foreground">Penyerapan SPK</span>
@@ -380,7 +475,8 @@ tr.zona-row:hover { background-color: var(--accent); }
       </div>
 
       <!-- Chart Distribusi -->
-      <div class="lg:col-span-4 bg-card rounded-[var(--radius)] border border-border p-5 shadow-sm flex flex-col justify-between">
+      <div
+        class="lg:col-span-4 bg-card rounded-[var(--radius)] border border-border p-5 shadow-sm flex flex-col justify-between">
         <div class="flex items-center justify-between mb-3 border-b border-border pb-2.5">
           <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Distribusi SPK per Tipe</h3>
           <span class="text-[11px] text-muted-foreground font-mono" id="chartStokHeaderSPK"></span>
@@ -405,16 +501,25 @@ tr.zona-row:hover { background-color: var(--accent); }
 
     <!-- ============ DETAIL TABLE ============ -->
     <section class="bg-card rounded-[var(--radius)] border border-border overflow-hidden shadow-sm">
-      <div class="px-5 py-4 border-b border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-card">
+      <div
+        class="px-5 py-4 border-b border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-card">
         <div>
           <h2 class="text-sm font-bold text-foreground tracking-tight">Detail Progres per Zona</h2>
           <p class="text-xs text-muted-foreground">Monitoring SPK, fisik makam, kontraktor &amp; deviasi lapangan</p>
         </div>
         <div class="flex gap-1.5 flex-wrap" id="tableFilters">
-          <button class="tab-btn active px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border transition-colors cursor-pointer" data-filter="all">Semua</button>
-          <button class="tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer" data-filter="pengerjaan">Pengerjaan</button>
-          <button class="tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer" data-filter="tender">Tender</button>
-          <button class="tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer" data-filter="selesai">Selesai</button>
+          <button
+            class="tab-btn active px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border transition-colors cursor-pointer"
+            data-filter="all">Semua</button>
+          <button
+            class="tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
+            data-filter="pengerjaan">Pengerjaan</button>
+          <button
+            class="tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
+            data-filter="tender">Tender</button>
+          <button
+            class="tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
+            data-filter="selesai">Selesai</button>
         </div>
       </div>
       <div class="overflow-x-auto scrollbar-thin">
@@ -423,14 +528,18 @@ tr.zona-row:hover { background-color: var(--accent); }
             <tr>
               <th class="px-4 py-3 cursor-pointer hover:text-foreground font-semibold" data-sort="zona">Zona ↕</th>
               <th class="px-4 py-3 font-semibold">Type</th>
-              <th class="px-4 py-3 text-right cursor-pointer hover:text-foreground font-semibold" data-sort="stokSPK">SPK ↕</th>
-              <th class="px-4 py-3 text-right cursor-pointer hover:text-foreground font-semibold" data-sort="terjual">Terjual ↕</th>
+              <th class="px-4 py-3 text-right cursor-pointer hover:text-foreground font-semibold" data-sort="stokSPK">
+                SPK ↕</th>
+              <th class="px-4 py-3 text-right cursor-pointer hover:text-foreground font-semibold" data-sort="terjual">
+                Terjual ↕</th>
               <th class="px-4 py-3 text-right font-semibold">Sisa</th>
-              <th class="px-4 py-3 text-right cursor-pointer hover:text-foreground font-semibold" data-sort="funeralReady">Ready ↕</th>
+              <th class="px-4 py-3 text-right cursor-pointer hover:text-foreground font-semibold"
+                data-sort="funeralReady">Ready ↕</th>
               <th class="px-4 py-3 min-w-[130px] font-semibold">% Ready</th>
               <th class="px-4 py-3 font-semibold">Status</th>
               <th class="px-4 py-3 font-semibold">Kontraktor</th>
-              <th class="px-4 py-3 min-w-[130px] cursor-pointer hover:text-foreground font-semibold" data-sort="aktualProgress">Progress ↕</th>
+              <th class="px-4 py-3 min-w-[130px] cursor-pointer hover:text-foreground font-semibold"
+                data-sort="aktualProgress">Progress ↕</th>
               <th class="px-4 py-3 font-semibold">Deviasi</th>
               <th class="px-4 py-3 font-semibold">Jadwal</th>
               <th class="px-4 py-3 font-semibold">Siteplan</th>
@@ -494,11 +603,80 @@ tr.zona-row:hover { background-color: var(--accent); }
     <p class="mt-1">Upload file Excel untuk memperbarui data dashboard</p>
   </footer>
 
+  <!-- ============ FILE MANAGER MODAL ============ -->
+  <div id="fileModal" class="modal-overlay">
+    <div class="bg-card border border-border rounded-[var(--radius)] shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden fade-in">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-border flex items-center justify-between gap-4 bg-muted/20">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
+              <path d="M2 10h20"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-foreground">File Manager &amp; Database</h3>
+            <p class="text-xs text-muted-foreground" id="modalStorageStatus">Daftar file laporan Excel di Supabase Cloud</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Button Tambah File -->
+          <button id="modalAddFileBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[calc(var(--radius)-4px)] text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Tambah File
+          </button>
+          
+          <!-- Close button -->
+          <button id="modalCloseBtn" class="w-8 h-8 rounded-[calc(var(--radius)-4px)] border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search bar & stats -->
+      <div class="px-5 py-2.5 border-b border-border/60 bg-card flex items-center justify-between gap-3 text-xs">
+        <div class="relative flex-1">
+          <input type="text" id="modalSearchInput" placeholder="Cari nama file atau tanggal..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-muted/40 border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary">
+          <svg class="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <span class="text-muted-foreground font-mono text-[11px] whitespace-nowrap" id="modalFileCount">0 file</span>
+      </div>
+
+      <!-- File List Area -->
+      <div class="p-5 overflow-y-auto max-h-[55vh] space-y-2.5 scrollbar-thin" id="fileListContainer">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-2.5 border-t border-border bg-muted/10 flex items-center justify-between text-[11px] text-muted-foreground font-mono">
+        <span id="backendIndicatorBadge" class="inline-flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Supabase Cloud Connected
+        </span>
+        <span>Format: .xlsx, .xls</span>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
 
   <div id="dropOverlay" class="drop-overlay">
     <div class="bg-card rounded-[var(--radius)] border-2 border-dashed border-primary p-10 text-center">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary mx-auto mb-3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="text-primary mx-auto mb-3">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="17 8 12 3 7 8" />
+        <line x1="12" x2="12" y1="3" y2="15" />
+      </svg>
       <p class="text-lg font-bold text-foreground">Drop file Excel di sini</p>
     </div>
   </div>
@@ -511,7 +689,7 @@ tr.zona-row:hover { background-color: var(--accent); }
       if (!serial || typeof serial !== 'number' || serial < 1000) return '';
       const d = new Date((serial - 25569) * 86400000);
       const dd = d.getUTCDate().toString().padStart(2, '0');
-      const mm = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][d.getUTCMonth()];
+      const mm = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][d.getUTCMonth()];
       return dd + ' ' + mm + ' ' + d.getUTCFullYear();
     }
     function cellVal(ws, r, c) {
@@ -701,6 +879,7 @@ tr.zona-row:hover { background-color: var(--accent); }
     }
 
     let currentDataset = null;
+    let currentActiveFileId = null;
     let chartInstance = null;
     let tableFilter = 'all';
     let tableSort = { key: 'zona', dir: 1 };
@@ -715,33 +894,34 @@ tr.zona-row:hover { background-color: var(--accent); }
 
     function renderDashboard(dataset) {
       currentDataset = dataset;
+      if (dataset.id !== undefined) currentActiveFileId = dataset.id;
       document.getElementById('uploadScreen').style.display = 'none';
       document.getElementById('dashboardContent').style.display = 'block';
-      
+
       const s = dataset.summary;
-      
+
       // Headers
       document.getElementById('headerDateSection').style.display = 'flex';
       document.getElementById('headerReportDate').textContent = dataset.reportDate;
-      document.getElementById('genDate').textContent = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-      
+      document.getElementById('genDate').textContent = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
       // KPIs
       document.getElementById('kpiRencana').textContent = s.totalRencana.toLocaleString();
       document.getElementById('kpiSPK').textContent = s.totalSPK.toLocaleString();
-      document.getElementById('kpiSPKPct').textContent = s.totalRencana > 0 ? ((s.totalSPK / s.totalRencana)*100).toFixed(1) + '% dari rencana' : '-';
+      document.getElementById('kpiSPKPct').textContent = s.totalRencana > 0 ? ((s.totalSPK / s.totalRencana) * 100).toFixed(1) + '% dari rencana' : '-';
       document.getElementById('kpiTerjual').textContent = s.totalTerjual.toLocaleString();
-      document.getElementById('kpiTerjualPct').textContent = s.totalSPK > 0 ? ((s.totalTerjual / s.totalSPK)*100).toFixed(1) + '% dari SPK' : '-';
+      document.getElementById('kpiTerjualPct').textContent = s.totalSPK > 0 ? ((s.totalTerjual / s.totalSPK) * 100).toFixed(1) + '% dari SPK' : '-';
       document.getElementById('kpiSisa').textContent = s.totalSisa.toLocaleString();
       document.getElementById('kpiReady').textContent = s.totalReady.toLocaleString();
       document.getElementById('kpiPctReady').textContent = s.pctReady + '%';
-      
+
       // Status Overview
       const totZona = s.zonaProgress.length;
       document.getElementById('statusTotalZona').textContent = totZona + ' Zona';
       document.getElementById('statusSelesai').textContent = s.statusCounts.selesai || 0;
       document.getElementById('statusPengerjaan').textContent = s.statusCounts.pengerjaan || 0;
       document.getElementById('statusTender').textContent = s.statusCounts.tender || 0;
-      
+
       const terjualPct = s.totalSPK > 0 ? (s.totalTerjual / s.totalSPK) * 100 : 0;
       document.getElementById('statusPenyerapanPct').textContent = terjualPct.toFixed(1) + '%';
       document.getElementById('statusPenyerapanBar').style.width = terjualPct + '%';
@@ -753,7 +933,7 @@ tr.zona-row:hover { background-color: var(--accent); }
       const ctx = document.getElementById('chartStokType');
       const typeSummary = dataset.types.summary;
       document.getElementById('chartStokHeaderSPK').textContent = s.totalSPK.toLocaleString() + ' SPK';
-      
+
       chartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -764,13 +944,14 @@ tr.zona-row:hover { background-color: var(--accent); }
           cutout: '70%', responsive: true, maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
-            tooltip: { backgroundColor: '#0d1117', titleColor: '#ffffff', bodyColor: '#8b949e', borderColor: '#30363d', borderWidth: 1, padding: 9, cornerRadius: 8,
-              callbacks: { label: function(c) { const t = typeSummary[c.dataIndex]; return ` ${t.stokSPK.toLocaleString()} SPK (${t.terjual.toLocaleString()} terjual)`; } }
+            tooltip: {
+              backgroundColor: '#0d1117', titleColor: '#ffffff', bodyColor: '#8b949e', borderColor: '#30363d', borderWidth: 1, padding: 9, cornerRadius: 8,
+              callbacks: { label: function (c) { const t = typeSummary[c.dataIndex]; return ` ${t.stokSPK.toLocaleString()} SPK (${t.terjual.toLocaleString()} terjual)`; } }
             }
           }
         }
       });
-      
+
       // Custom Chart Legend
       const legendEl = document.getElementById('chartStokLegend');
       const totalSPK = typeSummary.reduce((sum, t) => sum + t.stokSPK, 0);
@@ -820,11 +1001,11 @@ tr.zona-row:hover { background-color: var(--accent); }
     function renderTable() {
       if (!currentDataset) return;
       let filtered = [...currentDataset.zones];
-      
+
       if (tableFilter === 'pengerjaan') filtered = filtered.filter(z => z.status.startsWith('5'));
       else if (tableFilter === 'tender') filtered = filtered.filter(z => z.status.startsWith('2'));
       else if (tableFilter === 'selesai') filtered = filtered.filter(z => z.status.startsWith('6'));
-      
+
       if (tableSort.key) {
         filtered.sort((a, b) => {
           let va = a[tableSort.key], vb = b[tableSort.key];
@@ -834,7 +1015,7 @@ tr.zona-row:hover { background-color: var(--accent); }
           return 0;
         });
       }
-      
+
       const tbody = document.getElementById('zonaTableBody');
       tbody.innerHTML = filtered.map(z => {
         const readyPct = pctNum(z.pctReady);
@@ -934,43 +1115,552 @@ tr.zona-row:hover { background-color: var(--accent); }
 
     function showToast(msg, duration) {
       const t = document.getElementById('toast');
+      if (!t) return;
       t.textContent = msg;
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), duration || 3000);
     }
 
-    // Events
-    document.getElementById('uploadBtn').addEventListener('click', () => document.getElementById('excelFileInput').click());
-    document.getElementById('dropZone').addEventListener('click', () => document.getElementById('excelFileInput').click());
-    
-    document.getElementById('excelFileInput').addEventListener('change', function(e) {
+    // Supabase Configuration (Isi dengan kredensial Supabase Anda)
+    const SUPABASE_URL = 'https://ciwgqiaweqzexohilffx.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_KecHknpJN21fZVlPeTFxVg_r60S4h5E';
+
+    let supabaseClient = null;
+    if (window.supabase && SUPABASE_URL && !SUPABASE_URL.includes('xyzcompany')) {
+      try {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      } catch (e) {
+        console.warn('Gagal inisialisasi Supabase client:', e);
+      }
+    }
+
+    // ==========================================
+    // FILE MANAGER & MODAL STATE
+    // ==========================================
+    let currentReplaceTargetId = null;
+    let cachedFileList = [];
+
+    function openFileManager() {
+      const modal = document.getElementById('fileModal');
+      if (modal) {
+        modal.classList.add('active');
+        refreshFileList();
+      }
+    }
+
+    function closeFileManager() {
+      const modal = document.getElementById('fileModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    // Modal Trigger Buttons
+    const openFileBtn = document.getElementById('openFileBtn');
+    if (openFileBtn) openFileBtn.addEventListener('click', openFileManager);
+
+    const screenOpenBtn = document.getElementById('screenOpenFileBtn');
+    if (screenOpenBtn) screenOpenBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openFileManager();
+    });
+
+    const dropZone = document.getElementById('dropZone');
+    if (dropZone) dropZone.addEventListener('click', () => {
+      document.getElementById('excelFileInput').click();
+    });
+
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeFileManager);
+
+    const fileModal = document.getElementById('fileModal');
+    if (fileModal) {
+      fileModal.addEventListener('click', (e) => {
+        if (e.target.id === 'fileModal') closeFileManager();
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeFileManager();
+    });
+
+    // Button "Tambah File" in Modal Header
+    const modalAddFileBtn = document.getElementById('modalAddFileBtn');
+    if (modalAddFileBtn) {
+      modalAddFileBtn.addEventListener('click', () => {
+        document.getElementById('excelFileInput').click();
+      });
+    }
+
+    // Search filter in Modal
+    const modalSearchInput = document.getElementById('modalSearchInput');
+    if (modalSearchInput) {
+      modalSearchInput.addEventListener('input', (e) => {
+        renderFileListUI(e.target.value);
+      });
+    }
+
+    // ==========================================
+    // REFRESH & RENDER FILE LIST DARI SUPABASE
+    // ==========================================
+    async function refreshFileList() {
+      const container = document.getElementById('fileListContainer');
+      const countEl = document.getElementById('modalFileCount');
+      const statusEl = document.getElementById('modalStorageStatus');
+      const badgeEl = document.getElementById('backendIndicatorBadge');
+
+      if (!container) return;
+
+      container.innerHTML = `
+        <div class="py-12 text-center text-muted-foreground">
+          <svg class="animate-spin w-6 h-6 mx-auto mb-2 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p class="text-xs font-mono">Memuat file dari Supabase Cloud...</p>
+        </div>
+      `;
+
+      cachedFileList = [];
+
+      if (supabaseClient) {
+        try {
+          const { data, error } = await supabaseClient
+            .from('dashboard_kavling')
+            .select('id, file_name, file_url, report_date, summary, created_at')
+            .order('created_at', { ascending: false });
+
+          if (error) throw error;
+
+          cachedFileList = (data || []).map(row => ({
+            id: row.id,
+            fileName: row.file_name,
+            fileUrl: row.file_url,
+            reportDate: row.report_date,
+            summary: row.summary,
+            createdAt: row.created_at,
+            source: 'supabase'
+          }));
+
+          if (statusEl) statusEl.textContent = 'Daftar file tersimpan di Supabase Cloud Database';
+          if (badgeEl) badgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Supabase Cloud Connected';
+        } catch (err) {
+          console.warn('Gagal ambil data Supabase, fallback ke riwayat lokal:', err);
+          if (statusEl) statusEl.textContent = 'Menampilkan riwayat lokal (offline)';
+          if (badgeEl) badgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500"></span> Mode Offline / Lokal';
+        }
+      }
+
+      // Fallback ke localStorage jika kosong atau offline
+      if (cachedFileList.length === 0) {
+        const localList = getHistory();
+        cachedFileList = localList.map(h => ({
+          id: h.id,
+          fileName: h.fileName || 'Laporan Kavling',
+          fileUrl: '',
+          reportDate: h.reportDate,
+          summary: h.summary,
+          createdAt: h.uploadedAt,
+          source: 'local'
+        }));
+      }
+
+      renderFileListUI(document.getElementById('modalSearchInput')?.value || '');
+    }
+
+    function renderFileListUI(query = '') {
+      const container = document.getElementById('fileListContainer');
+      const countEl = document.getElementById('modalFileCount');
+      if (!container) return;
+
+      const q = query.trim().toLowerCase();
+      const filtered = cachedFileList.filter(f =>
+        !q ||
+        (f.fileName && f.fileName.toLowerCase().includes(q)) ||
+        (f.reportDate && f.reportDate.toLowerCase().includes(q))
+      );
+
+      if (countEl) countEl.textContent = `${filtered.length} file`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="py-10 text-center text-muted-foreground border border-dashed border-border rounded-xl p-6">
+            <svg class="w-10 h-10 mx-auto mb-2 text-muted-foreground/40" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <p class="text-xs font-semibold text-foreground mb-1">${q ? 'Tidak ada file yang cocok' : 'Belum ada file tersimpan di cloud'}</p>
+            <p class="text-[11px] text-muted-foreground mb-3">${q ? 'Coba kata kunci pencarian yang lain' : 'Klik tombol Tambah File untuk mengunggah file Excel pertama Anda'}</p>
+            <button onclick="document.getElementById('excelFileInput').click()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Tambah File Baru
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(f => {
+        const isActive = (currentActiveFileId !== null && String(currentActiveFileId) === String(f.id));
+        const activeBadge = isActive
+          ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">Sedang Dibuka</span>'
+          : '';
+        const createdDateStr = f.createdAt ? new Date(f.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+        const spkStr = f.summary?.totalSPK ? `${f.summary.totalSPK.toLocaleString()} SPK` : '';
+        const readyStr = f.summary?.pctReady ? `${f.summary.pctReady}% Ready` : '';
+
+        return `
+          <div class="border ${isActive ? 'border-primary/50 bg-primary/[0.03]' : 'border-border bg-card'} rounded-xl p-3 sm:p-3.5 hover:border-primary/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+            <div class="flex items-start gap-3 min-w-0 flex-1">
+              <div class="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="text-xs font-bold text-foreground truncate max-w-sm" title="${f.fileName}">${f.fileName}</h4>
+                  ${activeBadge}
+                </div>
+                <div class="flex items-center gap-2 text-[10px] text-muted-foreground font-mono mt-1 flex-wrap">
+                  <span>📅 ${f.reportDate || createdDateStr}</span>
+                  ${spkStr ? `<span>•</span><span>${spkStr}</span>` : ''}
+                  ${readyStr ? `<span>•</span><span class="text-emerald-500 font-semibold">${readyStr}</span>` : ''}
+                  <span>•</span>
+                  <span>Upload: ${createdDateStr}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Context Actions: Open, Rename, Replace, Delete -->
+            <div class="flex items-center gap-1.5 flex-shrink-0 self-end sm:self-center">
+              <button onclick="window.openFileItem('${f.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-1 cursor-pointer shadow-xs" title="Buka data ke dashboard">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                Open
+              </button>
+
+              <button onclick="window.renameFileItem('${f.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors flex items-center gap-1 cursor-pointer" title="Ubah nama file">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                Rename
+              </button>
+
+              <button onclick="window.triggerReplaceFile('${f.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors flex items-center gap-1 cursor-pointer" title="Ganti isi dengan file Excel baru">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Replace
+              </button>
+
+              <button onclick="window.deleteFileItem('${f.id}')" class="px-2 py-1.5 rounded-lg text-xs font-medium border border-border text-destructive/80 hover:text-destructive hover:bg-destructive/10 hover:border-destructive/30 transition-colors flex items-center gap-1 cursor-pointer" title="Hapus file dari cloud">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // CONTEXT ACTIONS: OPEN, RENAME, REPLACE, DELETE
+    // ==========================================
+
+    // 1. OPEN File Action
+    window.openFileItem = async function (id) {
+      showToast('Membuka file...');
+      try {
+        let dataset = null;
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient
+            .from('dashboard_kavling')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+          if (!error && data) {
+            dataset = {
+              id: data.id,
+              reportDate: data.report_date,
+              summary: data.summary,
+              zones: data.zones,
+              types: data.types,
+              siteplan: data.siteplan,
+              changelog: data.changelog,
+              fileUrl: data.file_url,
+              fileName: data.file_name
+            };
+          }
+        }
+
+        if (!dataset) {
+          const localList = getHistory();
+          dataset = localList.find(h => String(h.id) === String(id));
+        }
+
+        if (!dataset) throw new Error('Data file tidak ditemukan.');
+
+        currentActiveFileId = dataset.id;
+        renderDashboard(dataset);
+        closeFileManager();
+        showToast(`File "${dataset.fileName}" berhasil dibuka!`);
+      } catch (err) {
+        console.error('Error open file:', err);
+        showToast('Gagal membuka file: ' + err.message, 4000);
+      }
+    };
+
+    // 2. RENAME File Action
+    window.renameFileItem = async function (id) {
+      const item = cachedFileList.find(f => String(f.id) === String(id));
+      const currentName = item ? item.fileName : '';
+      const newName = prompt('Masukkan nama baru untuk file ini:', currentName);
+      if (!newName || newName.trim() === '' || newName.trim() === currentName) return;
+
+      const trimmedName = newName.trim();
+      showToast('Mengubah nama file...');
+
+      try {
+        if (supabaseClient) {
+          const { error } = await supabaseClient
+            .from('dashboard_kavling')
+            .update({ file_name: trimmedName })
+            .eq('id', id);
+
+          if (error) throw error;
+        }
+
+        // Juga update di local history jika ada
+        const localList = getHistory();
+        const localItem = localList.find(h => String(h.id) === String(id));
+        if (localItem) {
+          localItem.fileName = trimmedName;
+          saveHistory(localList);
+          updateHistoryDropdown();
+        }
+
+        if (currentDataset && String(currentActiveFileId) === String(id)) {
+          currentDataset.fileName = trimmedName;
+        }
+
+        await refreshFileList();
+        showToast('Nama file berhasil diperbarui!');
+      } catch (err) {
+        console.error('Error rename file:', err);
+        showToast('Gagal mengubah nama: ' + err.message, 4000);
+      }
+    };
+
+    // 3. REPLACE File Action
+    window.triggerReplaceFile = function (id) {
+      currentReplaceTargetId = id;
+      document.getElementById('replaceFileInput').click();
+    };
+
+    document.getElementById('replaceFileInput').addEventListener('change', async function (e) {
+      const file = e.target.files[0];
+      if (!file || !currentReplaceTargetId) return;
+
+      const targetId = currentReplaceTargetId;
+      showToast('Memproses file pengganti...');
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const dataset = parseExcelFile(arrayBuffer, file.name);
+
+        let fileUrl = '';
+        if (supabaseClient) {
+          try {
+            const filePath = `${Date.now()}_${file.name}`;
+            const { error: upErr } = await supabaseClient.storage
+              .from('excel-kavling')
+              .upload(filePath, file);
+
+            if (!upErr) {
+              const { data: urlData } = supabaseClient.storage
+                .from('excel-kavling')
+                .getPublicUrl(filePath);
+              fileUrl = urlData?.publicUrl || '';
+            }
+          } catch (storageErr) {
+            console.warn('Storage upload skip:', storageErr);
+          }
+
+          const updatePayload = {
+            file_name: file.name,
+            report_date: dataset.reportDate,
+            summary: dataset.summary,
+            zones: dataset.zones,
+            types: dataset.types,
+            siteplan: dataset.siteplan,
+            changelog: dataset.changelog
+          };
+          if (fileUrl) updatePayload.file_url = fileUrl;
+
+          const { error: dbErr } = await supabaseClient
+            .from('dashboard_kavling')
+            .update(updatePayload)
+            .eq('id', targetId);
+
+          if (dbErr) throw dbErr;
+        }
+
+        // Juga update di local history
+        const localList = getHistory();
+        const idx = localList.findIndex(h => String(h.id) === String(targetId));
+        if (idx !== -1) {
+          localList[idx] = { id: targetId, ...dataset };
+          saveHistory(localList);
+          updateHistoryDropdown();
+        }
+
+        // Jika file yang diganti sedang aktif dibuka, refresh dashboard
+        if (String(currentActiveFileId) === String(targetId)) {
+          dataset.id = targetId;
+          renderDashboard(dataset);
+        }
+
+        await refreshFileList();
+        showToast(`File berhasil diganti dengan "${file.name}"!`);
+      } catch (err) {
+        console.error('Error replace file:', err);
+        showToast('Gagal mengganti file: ' + err.message, 5000);
+      } finally {
+        e.target.value = '';
+        currentReplaceTargetId = null;
+      }
+    });
+
+    // 4. DELETE File Action
+    window.deleteFileItem = async function (id) {
+      const item = cachedFileList.find(f => String(f.id) === String(id));
+      const fileName = item ? item.fileName : 'file ini';
+
+      if (!confirm(`Apakah Anda yakin ingin menghapus "${fileName}" dari database Supabase?`)) return;
+
+      showToast('Menghapus file...');
+      try {
+        if (supabaseClient) {
+          const { error } = await supabaseClient
+            .from('dashboard_kavling')
+            .delete()
+            .eq('id', id);
+
+          if (error) throw error;
+        }
+
+        // Hapus dari local storage jika ada
+        let localList = getHistory();
+        localList = localList.filter(h => String(h.id) !== String(id));
+        saveHistory(localList);
+        updateHistoryDropdown();
+
+        // Jika file yang dihapus sedang dibuka di dashboard
+        if (String(currentActiveFileId) === String(id)) {
+          currentActiveFileId = null;
+          await refreshFileList();
+          if (cachedFileList.length > 0) {
+            window.openFileItem(cachedFileList[0].id);
+          } else {
+            currentDataset = null;
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('uploadScreen').style.display = 'flex';
+            document.getElementById('headerDateSection').style.display = 'none';
+          }
+        } else {
+          await refreshFileList();
+        }
+
+        showToast(`"${fileName}" berhasil dihapus.`);
+      } catch (err) {
+        console.error('Error delete file:', err);
+        showToast('Gagal menghapus file: ' + err.message, 4000);
+      }
+    };
+
+    // ==========================================
+    // TAMBAH FILE / UPLOAD EXCEL HANDLER
+    // ==========================================
+    document.getElementById('excelFileInput').addEventListener('change', function (e) {
       const file = e.target.files[0];
       if (!file) return;
       handleFile(file);
       e.target.value = '';
     });
 
-    function handleFile(file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const dataset = parseExcelFile(e.target.result, file.name);
-          addToHistory(dataset);
-          updateHistoryDropdown();
-          renderDashboard(dataset);
-          showToast('Data berhasil dimuat');
-        } catch (err) {
-          console.error(err);
-          showToast('Gagal memproses file Excel', 5000);
+    async function handleFile(file) {
+      try {
+        showToast('Memproses file Excel...');
+        // 1. Baca dan parse isi file Excel langsung di browser
+        const arrayBuffer = await file.arrayBuffer();
+        const dataset = parseExcelFile(arrayBuffer, file.name);
+
+        // 2. Jika Supabase terhubung, simpan ke backend Supabase
+        if (supabaseClient) {
+          showToast('Menyimpan ke Supabase cloud...');
+          try {
+            let fileUrl = '';
+            try {
+              const filePath = `${Date.now()}_${file.name}`;
+              const { error: uploadErr } = await supabaseClient.storage
+                .from('excel-kavling')
+                .upload(filePath, file);
+
+              if (!uploadErr) {
+                const { data: urlData } = supabaseClient.storage
+                  .from('excel-kavling')
+                  .getPublicUrl(filePath);
+                fileUrl = urlData?.publicUrl || '';
+              }
+            } catch (storageErr) {
+              console.warn('Storage upload skip:', storageErr);
+            }
+
+            const { data: insData, error: dbErr } = await supabaseClient
+              .from('dashboard_kavling')
+              .insert([{
+                file_name: file.name,
+                file_url: fileUrl,
+                report_date: dataset.reportDate,
+                summary: dataset.summary,
+                zones: dataset.zones,
+                types: dataset.types,
+                siteplan: dataset.siteplan,
+                changelog: dataset.changelog
+              }])
+              .select();
+
+            if (dbErr) throw dbErr;
+
+            if (insData && insData[0]) {
+              dataset.id = insData[0].id;
+              currentActiveFileId = insData[0].id;
+            }
+          } catch (cloudErr) {
+            console.warn('Gagal simpan ke Supabase:', cloudErr);
+            showToast('Disimpan lokal (sync cloud gagal)', 4000);
+          }
         }
-      };
-      reader.readAsArrayBuffer(file);
+
+        // 3. Simpan ke local history & render dashboard
+        addToHistory(dataset);
+        updateHistoryDropdown();
+        renderDashboard(dataset);
+
+        // Tutup modal atau refresh daftar file
+        closeFileManager();
+        await refreshFileList();
+
+        showToast(`File "${file.name}" berhasil ditambahkan!`);
+      } catch (err) {
+        console.error('Error memproses file:', err);
+        showToast('Gagal memproses file Excel: ' + (err.message || err), 5000);
+      }
     }
 
     // Drag and Drop
     const overlay = document.getElementById('dropOverlay');
     let dragCounter = 0;
-    
+
     window.addEventListener('dragenter', e => {
       e.preventDefault();
       dragCounter++;
@@ -1028,15 +1718,53 @@ tr.zona-row:hover { background-color: var(--accent); }
       if (chartInstance) chartInstance.update();
     });
 
-    // Init
+    // Init: Cek Supabase dulu, jika tidak ada fallback ke local storage
     if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
-    const historyList = getHistory();
-    if (historyList.length > 0) {
-      updateHistoryDropdown();
-      renderDashboard(historyList[historyList.length - 1]);
-    } else {
-      document.getElementById('uploadScreen').style.display = 'flex';
+
+    async function initDashboard() {
+      if (supabaseClient) {
+        try {
+          const { data, error } = await supabaseClient
+            .from('dashboard_kavling')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+          if (data && data.length > 0) {
+            const row = data[0];
+            const dataset = {
+              id: row.id,
+              reportDate: row.report_date,
+              summary: row.summary,
+              zones: row.zones,
+              types: row.types,
+              siteplan: row.siteplan,
+              changelog: row.changelog,
+              fileUrl: row.file_url,
+              fileName: row.file_name
+            };
+            currentActiveFileId = row.id;
+            renderDashboard(dataset);
+            return;
+          }
+        } catch (e) {
+          console.warn('Gagal memuat data dari Supabase:', e);
+        }
+      }
+
+      // Fallback ke riwayat lokal
+      const historyList = getHistory();
+      if (historyList.length > 0) {
+        updateHistoryDropdown();
+        renderDashboard(historyList[historyList.length - 1]);
+      } else {
+        document.getElementById('uploadScreen').style.display = 'flex';
+      }
     }
+
+    initDashboard();
+
   </script>
 </body>
+
 </html>
