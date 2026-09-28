@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Progres Kavling Pemakaman 25HA</title>
+
+    <!-- Open Sans Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS v4 Browser CDN -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
+    <style type="text/tailwindcss">
+        @import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(1.0000 0 0);
+  --foreground: oklch(0.1884 0.0128 248.5103);
+  --card: oklch(0.9784 0.0011 197.1387);
+  --card-foreground: oklch(0.1884 0.0128 248.5103);
+  --popover: oklch(1.0000 0 0);
+  --popover-foreground: oklch(0.1884 0.0128 248.5103);
+  --primary: oklch(0.6723 0.1606 244.9955);
+  --primary-foreground: oklch(1.0000 0 0);
+  --secondary: oklch(0.1884 0.0128 248.5103);
+  --secondary-foreground: oklch(1.0000 0 0);
+  --muted: oklch(0.9222 0.0013 286.3737);
+  --muted-foreground: oklch(0.48 0.0128 248.51);
+  --accent: oklch(0.9392 0.0166 250.8453);
+  --accent-foreground: oklch(0.6723 0.1606 244.9955);
+  --destructive: oklch(0.6188 0.2376 25.7658);
+  --destructive-foreground: oklch(1.0000 0 0);
+  --border: oklch(83.902% 0.0001 271.152);
+  --input: oklch(0.9809 0.0025 228.7836);
+  --ring: oklch(0.6818 0.1584 243.3540);
+  --chart-1: oklch(0.6723 0.1606 244.9955);
+  --chart-2: oklch(0.6907 0.1554 160.3454);
+  --chart-3: oklch(0.8214 0.1600 82.5337);
+  --chart-4: oklch(0.7064 0.1822 151.7125);
+  --chart-5: oklch(0.5919 0.2186 10.5826);
+  --sidebar: oklch(0.9784 0.0011 197.1387);
+  --sidebar-foreground: oklch(0.1884 0.0128 248.5103);
+  --sidebar-primary: oklch(0.6723 0.1606 244.9955);
+  --sidebar-primary-foreground: oklch(1.0000 0 0);
+  --sidebar-accent: oklch(0.9392 0.0166 250.8453);
+  --sidebar-accent-foreground: oklch(0.6723 0.1606 244.9955);
+  --sidebar-border: oklch(0.9271 0.0101 238.5177);
+  --sidebar-ring: oklch(0.6818 0.1584 243.3540);
+  --font-sans: 'Open Sans', system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'JetBrains Mono', Menlo, monospace;
+  --radius: 1.3rem;
+  --shadow-x: 0px;
+  --shadow-y: 2px;
+  --shadow-blur: 0px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0;
+  --shadow-color: rgba(29,161,242,0.15);
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+.dark {
+  --background: oklch(0 0 0);
+  --foreground: oklch(0.9328 0.0025 228.7857);
+  --card: oklch(0.2097 0.0080 274.5332);
+  --card-foreground: oklch(0.8853 0 0);
+  --popover: oklch(0 0 0);
+  --popover-foreground: oklch(0.9328 0.0025 228.7857);
+  --primary: oklch(0.6692 0.1607 245.0110);
+  --primary-foreground: oklch(1.0000 0 0);
+  --secondary: oklch(0.9622 0.0035 219.5331);
+  --secondary-foreground: oklch(0.1884 0.0128 248.5103);
+  --muted: oklch(0.2090 0 0);
+  --muted-foreground: oklch(0.5637 0.0078 247.9662);
+  --accent: oklch(0.1928 0.0331 242.5459);
+  --accent-foreground: oklch(0.6692 0.1607 245.0110);
+  --destructive: oklch(0.6188 0.2376 25.7658);
+  --destructive-foreground: oklch(1.0000 0 0);
+  --border: oklch(0.2674 0.0047 248.0045);
+  --input: oklch(0.3020 0.0288 244.8244);
+  --ring: oklch(0.6818 0.1584 243.3540);
+  --chart-1: oklch(0.6723 0.1606 244.9955);
+  --chart-2: oklch(0.6907 0.1554 160.3454);
+  --chart-3: oklch(0.8214 0.1600 82.5337);
+  --chart-4: oklch(0.7064 0.1822 151.7125);
+  --chart-5: oklch(0.5919 0.2186 10.5826);
+  --sidebar: oklch(0.2097 0.0080 274.5332);
+  --sidebar-foreground: oklch(0.8853 0 0);
+  --sidebar-primary: oklch(0.6818 0.1584 243.3540);
+  --sidebar-primary-foreground: oklch(1.0000 0 0);
+  --sidebar-accent: oklch(0.1928 0.0331 242.5459);
+  --sidebar-accent-foreground: oklch(0.6692 0.1607 245.0110);
+  --sidebar-border: oklch(0.3795 0.0220 240.5943);
+  --sidebar-ring: oklch(0.6818 0.1584 243.3540);
+  --font-sans: 'Open Sans', system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'JetBrains Mono', Menlo, monospace;
+  --radius: 1.3rem;
+  --shadow-x: 0px;
+  --shadow-y: 2px;
+  --shadow-blur: 0px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0;
+  --shadow-color: rgba(29,161,242,0.25);
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    letter-spacing: var(--tracking-normal);
+  }
+}
+
+.scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
+.progress-bar { transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+tr.zona-row { transition: background-color 0.15s ease; }
+tr.zona-row:hover { background-color: var(--accent); }
+.tab-btn.active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+</style>
+</head>
+
+<body class="min-h-screen antialiased selection:bg-primary selection:text-primary-foreground">
+
+    <!-- ============ HEADER ============ -->
+    <header class="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3.5">
+                    <div
+                        class="w-11 h-11 rounded-[var(--radius)] bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" x2="21" y1="22" y2="22" />
+                            <line x1="6" x2="6" y1="18" y2="11" />
+                            <line x1="10" x2="10" y1="18" y2="11" />
+                            <line x1="14" x2="14" y1="18" y2="11" />
+                            <line x1="18" x2="18" y1="18" y2="11" />
+                            <polygon points="12 2 20 7 4 7" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-foreground">Progres Kavling
+                                Pemakaman</h1>
+                            <span
+                                class="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full border border-border bg-accent text-accent-foreground">25
+                                HA</span>
+                        </div>
+                        <p class="text-xs text-muted-foreground mt-0.5 font-medium">Monitoring operasional, ketersediaan
+                            unit &amp; SPK fisik</p>
+                    </div>
+                </div>
+
+                <!-- Right Toolbar & Theme Toggle -->
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:flex items-center gap-2.5 text-xs font-mono border-r border-border pr-3.5">
+                        <span class="flex items-center gap-1.5 text-muted-foreground font-medium">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 25-Sep-2026
+                        </span>
+                        <span class="text-muted-foreground/40">|</span>
+                        <span class="text-muted-foreground" id="genDate"></span>
+                    </div>
+
+                    <button id="themeToggle"
+                        class="w-9 h-9 rounded-[calc(var(--radius)-4px)] border border-border bg-card flex items-center justify-center text-foreground hover:bg-accent transition-colors cursor-pointer"
+                        title="Toggle Light/Dark Theme">
+                        <svg id="moonIcon" class="w-4 h-4 hidden dark:block text-primary"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                        </svg>
+                        <svg id="sunIcon" class="w-4 h-4 block dark:hidden text-amber-500"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="4" />
+                            <path d="M12 2v2" />
+                            <path d="M12 20v2" />
+                            <path d="m4.93 4.93 1.41 1.41" />
+                            <path d="m17.66 17.66 1.41 1.41" />
+                            <path d="M2 12h2" />
+                            <path d="M20 12h2" />
+                            <path d="m6.34 17.66-1.41 1.41" />
+                            <path d="m19.07 4.93-1.41 1.41" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+        <!-- ============ KPI CARDS ============ -->
+        <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
+            <div
+                class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+                <div class="flex items-center justify-between text-muted-foreground mb-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider">Rencana</span>
+                    <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect width="7" height="7" x="3" y="3" rx="1" />
+                        <rect width="7" height="7" x="14" y="3" rx="1" />
+                        <rect width="7" height="7" x="14" y="14" rx="1" />
+                        <rect width="7" height="7" x="3" y="14" rx="1" />
+                    </svg>
+                </div>
+                <p class="text-2xl font-bold font-mono tracking-tight text-foreground">1.932</p>
+                <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">Total kavling</p>
+            </div>
+
+            <div
+                class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+                <div class="flex items-center justify-between text-muted-foreground mb-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider">SPK</span>
+                    <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                        <path d="M12 11h4" />
+                        <path d="M12 16h4" />
+                    </svg>
+                </div>
+                <p class="text-2xl font-bold font-mono tracking-tight text-foreground">1.669</p>
+                <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">86.4% dari rencana</p>
+            </div>
+
+            <div
+                class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+                <div class="flex items-center justify-between text-muted-foreground mb-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider">Terjual</span>
+                    <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
+                        <path d="M12 18V6" />
+                    </svg>
+                </div>
+                <p class="text-2xl font-bold font-mono tracking-tight text-foreground">685</p>
+                <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">41.0% dari SPK</p>
+            </div>
+
+            <div
+                class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+                <div class="flex items-center justify-between text-muted-foreground mb-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider">Sisa Stok</span>
+                    <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path
+                            d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                        <path d="M12 22V12" />
+                    </svg>
+                </div>
+                <p class="text-2xl font-bold font-mono tracking-tight text-foreground">984</p>
+                <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">Belum terjual</p>
+            </div>
+
+            <div
+                class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+                <div class="flex items-center justify-between text-muted-foreground mb-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider">Funeral Ready</span>
+                    <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="m9 12 2 2 4-4" />
+                    </svg>
+                </div>
+                <p class="text-2xl font-bold font-mono tracking-tight text-emerald-500">1.358</p>
+                <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">Siap pakai</p>
+            </div>
+
+            <!-- Primary Featured Card -->
+            <div class="bg-primary text-primary-foreground rounded-[var(--radius)] border border-primary p-4 shadow-sm">
+                <div class="flex items-center justify-between opacity-90 mb-1">
+                    <span class="text-[11px] font-bold uppercase tracking-wider">% Ready</span>
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                        <polyline points="16 7 22 7 22 13" />
+                    </svg>
+                </div>
+                <p class="text-2xl font-bold font-mono tracking-tight">81.4%</p>
+                <p class="text-[11px] opacity-80 mt-0.5 font-medium">dari total SPK</p>
+            </div>
+        </section>
+
+        <!-- ============ STATUS & CHARTS ============ -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <!-- Status Overview -->
+            <div
+                class="lg:col-span-3 bg-card rounded-[var(--radius)] border border-border p-5 flex flex-col justify-between shadow-sm">
+                <div>
+                    <div class="flex items-center justify-between border-b border-border pb-3 mb-3">
+                        <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Status Zona</h3>
+                        <span
+                            class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-accent text-accent-foreground">42
+                            Zona</span>
+                    </div>
+                    <div class="space-y-2.5">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="flex items-center gap-2 text-muted-foreground font-medium">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Selesai
+                            </span>
+                            <span class="font-mono font-bold text-foreground">2</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="flex items-center gap-2 text-muted-foreground font-medium">
+                                <span class="w-2.5 h-2.5 rounded-full bg-primary"></span> Pengerjaan
+                            </span>
+                            <span class="font-mono font-bold text-foreground">30</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="flex items-center gap-2 text-muted-foreground font-medium">
+                                <span class="w-2.5 h-2.5 rounded-full bg-muted-foreground/60"></span> Tender
+                            </span>
+                            <span class="font-mono font-bold text-foreground">10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-border pt-4 mt-4">
+                    <div class="flex justify-between text-xs mb-1.5 font-medium">
+                        <span class="text-muted-foreground">Penyerapan SPK</span>
+                        <span class="font-mono font-bold text-foreground">41.0%</span>
+                    </div>
+                    <div class="w-full bg-muted rounded-full h-2 overflow-hidden">
+                        <div class="bg-primary h-full rounded-full progress-bar" style="width: 41.0%"></div>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-muted-foreground font-mono mt-1.5">
+                        <span>685 terjual</span>
+                        <span>984 sisa</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Distribusi -->
+            <div
+                class="lg:col-span-4 bg-card rounded-[var(--radius)] border border-border p-5 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-3 border-b border-border pb-2.5">
+                    <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Distribusi SPK per Tipe
+                    </h3>
+                    <span class="text-[11px] text-muted-foreground font-mono">1.669 SPK</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-36 h-36 flex-shrink-0 relative">
+                        <canvas id="chartStokType"></canvas>
+                    </div>
+                    <div id="chartStokLegend" class="flex-1 space-y-1.5 text-xs font-mono min-w-0"></div>
+                </div>
+            </div>
+
+            <!-- Progress per Zona (Bar List) -->
+            <div class="lg:col-span-5 bg-card rounded-[var(--radius)] border border-border p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-3 border-b border-border pb-2.5">
+                    <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Progres Aktual Zona
+                        Aktif</h3>
+                    <span class="text-[11px] text-muted-foreground font-mono">Progress • Deviasi</span>
+                </div>
+                <div id="progressBars" class="space-y-1.5 max-h-[175px] overflow-y-auto scrollbar-thin pr-1 text-xs">
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ DETAIL TABLE ============ -->
+        <section class="bg-card rounded-[var(--radius)] border border-border overflow-hidden shadow-sm">
+            <div
+                class="px-5 py-4 border-b border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-card">
+                <div>
+                    <h2 class="text-sm font-bold text-foreground tracking-tight">Detail Progres per Zona</h2>
+                    <p class="text-xs text-muted-foreground">Monitoring SPK, fisik makam, kontraktor &amp; deviasi
+                        lapangan</p>
+                </div>
+                <div class="flex gap-1.5 flex-wrap">
+                    <button
+                        class="tab-btn active px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border transition-colors cursor-pointer"
+                        data-filter="all">Semua</button>
+                    <button
+                        class="tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
+                        data-filter="pengerjaan">Pengerjaan</button>
+                    <button
+                        class="tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
+                        data-filter="tender">Tender</button>
+                    <button
+                        class="tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
+                        data-filter="selesai">Selesai</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto scrollbar-thin">
+                <table class="w-full text-xs text-left" id="zonaTable">
+                    <thead
+                        class="bg-muted/40 border-b border-border text-muted-foreground font-mono uppercase text-[11px]">
+                        <tr>
+                            <th class="px-4 py-3 cursor-pointer hover:text-foreground font-semibold" data-sort="zona">
+                                Zona ↕</th>
+                            <th class="px-4 py-3 font-semibold">Type</th>
+                            <th class="px-4 py-3 text-right cursor-pointer hover:text-foreground font-semibold"
+                                data-sort="stokSPK">SPK ↕</th>
+                            <th class="px-4 py-3 text-right cursor-pointer hover:text-foreground font-semibold"
+                                data-sort="terjual">Terjual ↕</th>
+                            <th class="px-4 py-3 text-right font-semibold">Sisa</th>
+                            <th class="px-4 py-3 text-right cursor-pointer hover:text-foreground font-semibold"
+                                data-sort="funeralReady">Ready ↕</th>
+                            <th class="px-4 py-3 min-w-[130px] font-semibold">% Ready</th>
+                            <th class="px-4 py-3 font-semibold">Status</th>
+                            <th class="px-4 py-3 font-semibold">Kontraktor</th>
+                            <th class="px-4 py-3 min-w-[130px] cursor-pointer hover:text-foreground font-semibold"
+                                data-sort="aktualProgress">Progress ↕</th>
+                            <th class="px-4 py-3 font-semibold">Deviasi</th>
+                            <th class="px-4 py-3 font-semibold">Jadwal</th>
+                            <th class="px-4 py-3 font-semibold">Siteplan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="zonaTableBody" class="divide-y divide-border"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ============ REKAP PER TIPE ============ -->
+        <section class="bg-card rounded-[var(--radius)] border border-border overflow-hidden shadow-sm">
+            <div class="px-5 py-4 border-b border-border">
+                <h2 class="text-sm font-bold text-foreground tracking-tight">Rekapitulasi per Tipe Kavling</h2>
+                <p class="text-xs text-muted-foreground">Evaluasi target ketersediaan vs realisasi unit siap pakai</p>
+            </div>
+            <div class="overflow-x-auto scrollbar-thin">
+                <table class="w-full text-xs text-left">
+                    <thead
+                        class="bg-muted/40 border-b border-border text-muted-foreground font-mono uppercase text-[11px]">
+                        <tr>
+                            <th class="px-4 py-3 font-semibold">Tipe Kavling</th>
+                            <th class="px-4 py-3 text-right font-semibold">Rencana</th>
+                            <th class="px-4 py-3 text-right font-semibold">SPK</th>
+                            <th class="px-4 py-3 text-right font-semibold">Terjual</th>
+                            <th class="px-4 py-3 text-right font-semibold">Sisa Stok</th>
+                            <th class="px-4 py-3 text-right font-semibold">Funeral Ready</th>
+                            <th class="px-4 py-3 min-w-[130px] font-semibold">% Ready</th>
+                            <th class="px-4 py-3 text-right font-semibold">Target</th>
+                            <th class="px-4 py-3 text-right font-semibold">Selisih</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rekapBody" class="divide-y divide-border"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ============ LAPORAN FOTO & SITEPLAN ============ -->
+        <section class="bg-card rounded-[var(--radius)] border border-border overflow-hidden shadow-sm">
+            <div class="px-5 py-4 border-b border-border">
+                <h2 class="text-sm font-bold text-foreground tracking-tight">Laporan Foto &amp; Siteplan Lapangan</h2>
+                <p class="text-xs text-muted-foreground">Arsip dokumentasi berkala dan plotting fisik makam</p>
+            </div>
+            <div class="p-5">
+                <div class="flex gap-2 mb-4 flex-wrap" id="siteplanTabs"></div>
+                <div id="siteplanContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ CHANGELOG ============ -->
+        <section class="bg-card rounded-[var(--radius)] border border-border overflow-hidden shadow-sm">
+            <div class="px-5 py-4 border-b border-border">
+                <h2 class="text-sm font-bold text-foreground tracking-tight">Changelog &amp; Riwayat Revisi</h2>
+                <p class="text-xs text-muted-foreground">Log penyesuaian lot makam, pergeseran batas struktur &amp;
+                    approval</p>
+            </div>
+            <div class="p-5" id="changelogContent"></div>
+        </section>
+
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="border-t border-border mt-12 py-6 bg-card text-center text-xs text-muted-foreground font-mono">
+        <p>Dashboard Progres Kavling Pemakaman 25HA &bull; OKLCH Electric Blue Theme</p>
+        <p class="mt-1">Untuk update data: edit file Excel, jalankan <code
+                class="px-2 py-0.5 rounded-full bg-muted text-foreground border border-border">node generate.js</code>
+        </p>
+    </footer>
+
+    <!-- ============ JAVASCRIPT ============ -->
+    <script>
+        (function () {
+            // === THEME TOGGLE (Sync with class .dark on <html>) ===
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateChartTheme();
+            });
+
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.remove('dark');
+            }
+
+            // === DATA SOURCE ===
+            const ZONES = [{"zona":"QORONFUL","type":"DD","accMakam":"https://drive.google.com/open?id=1181o-Rw9nh0JIVYKdlRSvozUdDP1E1eU&usp=drive_fs","stokRencana":2,"stokSPK":0,"terjual":0,"sisaStok":0,"funeralReady":0,"pctReady":0,"status":"2. PERSIAPAN TENDER","kontraktor":"","tglMulai":"","tglSelesai":"","aktualProgress":0,"deviasi":null,"keterangan":""},{"zona":"QORONFUL","type":"S","accMakam":"https://drive.google.com/open?id=1181o-Rw9nh0JIVYKdlRSvozUdDP1E1eU&usp=drive_fs","stokRencana":25,"stokSPK":0,"terjual":0,"sisaStok":0,"funeralReady":0,"pctReady":0,"status":"2. PERSIAPAN TENDER","kontraktor":"","tglMulai":"","tglSelesai":"","aktualProgress":0,"deviasi":null,"keterangan":""},{"zona":"YAASMIIN M","type":"SFA","accMakam":"https://drive.google.com/open?id=1drlB8VKxAfB9xe9_hG6_cbIoTMKmE_0n&usp=drive_fs","stokRencana":7,"stokSPK":0,"terjual":0,"sisaStok":0,"funeralReady":0,"pctReady":0,"status":"2. PERSIAPAN TENDER","kontraktor":"","tglMulai":"","tglSelesai":"","aktualProgress":0,"deviasi":null,"keterangan":""},{"zona":"YAASMIIN M","type":"D","accMakam":"https://drive.google.com/open?id=1drlB8VKxAfB9xe9_hG6_cbIoTMKmE_0n&usp=drive_fs","stokRencana":15,"stokSPK":0,"terjual":0,"sisaStok":0,"funeralReady":0,"pctReady":0,"status":"2. PERSIAPAN TENDER","kontraktor":"","tglMulai":"","tglSelesai":"","aktualProgress":0,"deviasi":null,"keterangan":""},{"zona":"IDILWIIS","type":"S","accMakam":"https://drive.google.com/open?id=1UijxdEQ7hNZ6Sop52V-0zp1K1-VBR6gU&usp=drive_fs","stokRencana":71,"stokSPK":0,"terjual":0,"sisaStok":0,"funeralReady":0,"pctReady":0,"status":"2. PERSIAPAN TENDER","kontraktor":"","tglMulai":"","tglSelesai":"","aktualProgress":0,"deviasi":null,"keterangan":""},{"zona":"IDILWIIS","type":"DD","accMakam":"https://drive.google.com/open?id=1UijxdEQ7hNZ6Sop52V-0zp1K1-VBR6gU&usp=drive_fs","stokRencana":8,"stokSPK":0,"terjual":0,"sisaStok":0,"funeralReady":0,"pctReady":0,"status":"2. PERSIAPAN TENDER","kontraktor":"","tglMulai":"","tglSelesai":"","aktualProgress":0,"deviasi":null,"keterangan":""},{"zona":"ZANBAQAH EXT","type":"FA","accMakam":"https://drive.google.com/open?id=1Eu6sFhI-xc2UvnfOmAiriutJ4fbe0Bce&usp=drive_fs","stokRencana":21,"stokSPK":0,"terjual":0,"sisaStok":0,"funeralReady":0,"pctReady":0,"status":"2. PERSIAPAN TENDER","kontraktor":"","tglMulai":"","tglSelesai":"","aktualProgress":0,"deviasi":null,"keterangan":""},{"zona":"ZANBAQAH EXT","type":"D","accMakam":"https://drive.google.com/open?id=1Eu6sFhI-xc2UvnfOmAiriutJ4fbe0Bce&usp=drive_fs","stokRencana":30,"stokSPK":0,"terjual":0,"sisaStok":0,"funeralReady":0,"pctReady":0,"status":"2. PERSIAPAN TENDER","kontraktor":"","tglMulai":"","tglSelesai":"","aktualProgress":0,"deviasi":null,"keterangan":""},{"zona":"ZANBAQAH EXT","type":"DV","accMakam":"https://drive.google.com/open?id=1Eu6sFhI-xc2UvnfOmAiriutJ4fbe0Bce&usp=drive_fs","stokRencana":6,"stokSPK":0,"terjual":0,"sisaStok":0,"funeralReady":0,"pctReady":0,"status":"2. PERSIAPAN TENDER","kontraktor":"","tglMulai":"","tglSelesai":"","aktualProgress":0,"deviasi":null,"keterangan":""},{"zona":"SAWSAN","type":"D","accMakam":"https://drive.google.com/open?id=1FKylqnRRT0qEiv6eHwf6zGzwLSCYsSM0&usp=drive_fs","stokRencana":78,"stokSPK":0,"terjual":0,"sisaStok":0,"funeralReady":0,"pctReady":0,"status":"2. PERSIAPAN TENDER","kontraktor":"","tglMulai":"","tglSelesai":"","aktualProgress":0,"deviasi":null,"keterangan":""},{"zona":"KAMIILIYA","type":"RFG","accMakam":"https://drive.google.com/open?id=1Um5O_zKe7koYY_tN1WNviT1SnMjW22b8&usp=drive_fs","stokRencana":1,"stokSPK":1,"terjual":0,"sisaStok":1,"funeralReady":1,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"PLIS","tglMulai":"18 Agu 2026","tglSelesai":"16 Nov 2026","aktualProgress":57.66,"deviasi":42.12,"keterangan":""},{"zona":"KAMIILIYA","type":"RFH","accMakam":"https://drive.google.com/open?id=1Um5O_zKe7koYY_tN1WNviT1SnMjW22b8&usp=drive_fs","stokRencana":1,"stokSPK":1,"terjual":0,"sisaStok":1,"funeralReady":1,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"PLIS","tglMulai":"18 Agu 2026","tglSelesai":"16 Nov 2026","aktualProgress":57.66,"deviasi":42.12,"keterangan":""},{"zona":"KAMIILIYA","type":"RFI","accMakam":"https://drive.google.com/open?id=1Um5O_zKe7koYY_tN1WNviT1SnMjW22b8&usp=drive_fs","stokRencana":2,"stokSPK":2,"terjual":0,"sisaStok":2,"funeralReady":0,"pctReady":0,"status":"5. SEDANG PENGERJAAN","kontraktor":"PLIS","tglMulai":"18 Agu 2026","tglSelesai":"16 Nov 2026","aktualProgress":57.66,"deviasi":42.12,"keterangan":""},{"zona":"KAMIILIYA","type":"SFG","accMakam":"https://drive.google.com/open?id=1Um5O_zKe7koYY_tN1WNviT1SnMjW22b8&usp=drive_fs","stokRencana":1,"stokSPK":1,"terjual":1,"sisaStok":0,"funeralReady":1,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"PLIS","tglMulai":"18 Agu 2026","tglSelesai":"16 Nov 2026","aktualProgress":57.66,"deviasi":42.12,"keterangan":""},{"zona":"KAMIILIYA","type":"SFA","accMakam":"https://drive.google.com/open?id=1Um5O_zKe7koYY_tN1WNviT1SnMjW22b8&usp=drive_fs","stokRencana":11,"stokSPK":11,"terjual":0,"sisaStok":11,"funeralReady":3,"pctReady":0.2727272727,"status":"5. SEDANG PENGERJAAN","kontraktor":"PLIS","tglMulai":"18 Agu 2026","tglSelesai":"16 Nov 2026","aktualProgress":57.66,"deviasi":42.12,"keterangan":""},{"zona":"KAMIILIYA","type":"D","accMakam":"https://drive.google.com/open?id=1Um5O_zKe7koYY_tN1WNviT1SnMjW22b8&usp=drive_fs","stokRencana":6,"stokSPK":6,"terjual":0,"sisaStok":6,"funeralReady":6,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"PLIS","tglMulai":"18 Agu 2026","tglSelesai":"16 Nov 2026","aktualProgress":57.66,"deviasi":42.12,"keterangan":""},{"zona":"YAASMIN I1","type":"D","accMakam":"https://drive.google.com/open?id=1LP07vRAFiIMa4hlR28kTjzew9avvXq90&usp=drive_fs","stokRencana":53,"stokSPK":53,"terjual":0,"sisaStok":53,"funeralReady":9,"pctReady":0.1698113208,"status":"5. SEDANG PENGERJAAN","kontraktor":"MJU","tglMulai":"01 Sep 2026","tglSelesai":"30 Des 2026","aktualProgress":1.111,"deviasi":0.2953,"keterangan":""},{"zona":"SAHLIYAH C1","type":"D","accMakam":"https://drive.google.com/open?id=11f-H0b0S2s0gn0Wr_Sz4Z6ZlXSjpK_6L&usp=drive_fs","stokRencana":27,"stokSPK":27,"terjual":0,"sisaStok":27,"funeralReady":0,"pctReady":0,"status":"5. SEDANG PENGERJAAN","kontraktor":"MJU","tglMulai":"01 Sep 2026","tglSelesai":"30 Des 2026","aktualProgress":1.111,"deviasi":0.2953,"keterangan":""},{"zona":"WARDAH FF3","type":"S","accMakam":"https://drive.google.com/open?id=1K6liyT-QfR8PxlYm8TaPofrLBq4s8X3j&usp=drive_fs","stokRencana":206,"stokSPK":206,"terjual":0,"sisaStok":206,"funeralReady":0,"pctReady":0,"status":"5. SEDANG PENGERJAAN","kontraktor":"MJU","tglMulai":"18 Agu 2026","tglSelesai":"30 Jan 2027","aktualProgress":0,"deviasi":3.64,"keterangan":""},{"zona":"WARDAH GG","type":"S","accMakam":"","stokRencana":177,"stokSPK":177,"terjual":42,"sisaStok":135,"funeralReady":174,"pctReady":0.9830508475,"status":"5. SEDANG PENGERJAAN","kontraktor":"BEN","tglMulai":"25 Jun 2026","tglSelesai":"23 Okt 2026","aktualProgress":56.608,"deviasi":-23.064,"keterangan":""},{"zona":"QORONFUL","type":"FA","accMakam":"https://drive.google.com/open?id=115SE3gEZqMaLXwP_Xt_Qp0_Pd4wok2rr&usp=drive_fs","stokRencana":10,"stokSPK":10,"terjual":10,"sisaStok":0,"funeralReady":7,"pctReady":0.7,"status":"5. SEDANG PENGERJAAN","kontraktor":"MJU","tglMulai":"12 Mar 2026","tglSelesai":"09 Jun 2026","aktualProgress":96.94,"deviasi":-2.91,"keterangan":""},{"zona":"QORONFUL","type":"SFA","accMakam":"https://drive.google.com/open?id=115SE3gEZqMaLXwP_Xt_Qp0_Pd4wok2rr&usp=drive_fs","stokRencana":15,"stokSPK":15,"terjual":12,"sisaStok":3,"funeralReady":12,"pctReady":0.8,"status":"5. SEDANG PENGERJAAN","kontraktor":"MJU","tglMulai":"12 Mar 2026","tglSelesai":"09 Jun 2026","aktualProgress":96.94,"deviasi":-2.91,"keterangan":""},{"zona":"QORONFUL","type":"SFD","accMakam":"https://drive.google.com/open?id=115SE3gEZqMaLXwP_Xt_Qp0_Pd4wok2rr&usp=drive_fs","stokRencana":5,"stokSPK":5,"terjual":5,"sisaStok":0,"funeralReady":4,"pctReady":0.8,"status":"5. SEDANG PENGERJAAN","kontraktor":"MJU","tglMulai":"12 Mar 2026","tglSelesai":"09 Jun 2026","aktualProgress":96.94,"deviasi":-2.91,"keterangan":""},{"zona":"SAAKUURAA 3","type":"DD","accMakam":"https://drive.google.com/open?id=11mMN55Fr7RYpiRbojLQm7gViHkFNRNpn&usp=drive_fs","stokRencana":3,"stokSPK":3,"terjual":2,"sisaStok":1,"funeralReady":3,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"SAEPUL","tglMulai":"03 Jun 2026","tglSelesai":"01 Okt 2026","aktualProgress":86.96,"deviasi":-9.96,"keterangan":""},{"zona":"SAAKUURAA 3","type":"S","accMakam":"https://drive.google.com/open?id=11mMN55Fr7RYpiRbojLQm7gViHkFNRNpn&usp=drive_fs","stokRencana":52,"stokSPK":52,"terjual":43,"sisaStok":9,"funeralReady":52,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"SAEPUL","tglMulai":"03 Jun 2026","tglSelesai":"01 Okt 2026","aktualProgress":86.96,"deviasi":-9.96,"keterangan":""},{"zona":"SAAKUURAA 3","type":"SD","accMakam":"https://drive.google.com/open?id=11mMN55Fr7RYpiRbojLQm7gViHkFNRNpn&usp=drive_fs","stokRencana":20,"stokSPK":20,"terjual":2,"sisaStok":18,"funeralReady":20,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"SAEPUL","tglMulai":"03 Jun 2026","tglSelesai":"01 Okt 2026","aktualProgress":86.96,"deviasi":-9.96,"keterangan":""},{"zona":"YAASMIN I2","type":"S","accMakam":"https://drive.google.com/open?id=16WPidPR68Yx1T6HaDMEVagvqER0gypqr&usp=drive_fs","stokRencana":233,"stokSPK":233,"terjual":127,"sisaStok":106,"funeralReady":233,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"MJU","tglMulai":"01 Apr 2026","tglSelesai":"30 Jun 2026","aktualProgress":73.748,"deviasi":-26.251,"keterangan":""},{"zona":"YAASMIN J1","type":"S","accMakam":"https://drive.google.com/open?id=1KT88A8AqF0JRBZLmSpuzy1pim0uObXB9&usp=drive_fs","stokRencana":112,"stokSPK":112,"terjual":78,"sisaStok":34,"funeralReady":112,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"NARA","tglMulai":"25 Feb 2026","tglSelesai":"25 Jun 2026","aktualProgress":92.74,"deviasi":-7.261,"keterangan":""},{"zona":"YAASMIN L","type":"S","accMakam":"https://drive.google.com/open?id=16WPidPR68Yx1T6HaDMEVagvqER0gypqr&usp=drive_fs","stokRencana":165,"stokSPK":165,"terjual":92,"sisaStok":73,"funeralReady":165,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"MJU","tglMulai":"01 Apr 2026","tglSelesai":"30 Jun 2026","aktualProgress":73.748,"deviasi":-26.251,"keterangan":""},{"zona":"ZAHRATUN","type":"D","accMakam":"","stokRencana":17,"stokSPK":17,"terjual":17,"sisaStok":0,"funeralReady":17,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"EDI","tglMulai":"03 Jun 2026","tglSelesai":"01 Okt 2026","aktualProgress":82.04,"deviasi":-5.15,"keterangan":""},{"zona":"ZAHRATUN","type":"DD","accMakam":"","stokRencana":2,"stokSPK":2,"terjual":1,"sisaStok":1,"funeralReady":1,"pctReady":0.5,"status":"5. SEDANG PENGERJAAN","kontraktor":"SAEPUL","tglMulai":"03 Jun 2026","tglSelesai":"01 Okt 2026","aktualProgress":78.9,"deviasi":-15.17,"keterangan":""},{"zona":"ZAHRATUN","type":"FA","accMakam":"","stokRencana":8,"stokSPK":8,"terjual":4,"sisaStok":4,"funeralReady":8,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"EDI","tglMulai":"03 Jun 2026","tglSelesai":"01 Okt 2026","aktualProgress":82.04,"deviasi":-5.15,"keterangan":""},{"zona":"ZAHRATUN","type":"FB","accMakam":"","stokRencana":4,"stokSPK":4,"terjual":4,"sisaStok":0,"funeralReady":4,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"EDI","tglMulai":"03 Jun 2026","tglSelesai":"01 Okt 2026","aktualProgress":82.04,"deviasi":-5.15,"keterangan":""},{"zona":"ZAHRATUN","type":"S","accMakam":"","stokRencana":47,"stokSPK":47,"terjual":47,"sisaStok":0,"funeralReady":47,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"SAEPUL","tglMulai":"03 Jun 2026","tglSelesai":"01 Okt 2026","aktualProgress":78.9,"deviasi":-15.17,"keterangan":""},{"zona":"KHUZAAMAA","type":"DD","accMakam":"https://drive.google.com/open?id=1aSHzR-v0sV_qJFU_NA4wMa3FH17MmIVH&usp=drive_fs","stokRencana":10,"stokSPK":10,"terjual":0,"sisaStok":10,"funeralReady":8,"pctReady":0.8,"status":"5. SEDANG PENGERJAAN","kontraktor":"BEN","tglMulai":"01 Agu 2026","tglSelesai":"14 Nov 2026","aktualProgress":34.5,"deviasi":-0.42,"keterangan":""},{"zona":"KHUZAAMAA","type":"S","accMakam":"https://drive.google.com/open?id=1aSHzR-v0sV_qJFU_NA4wMa3FH17MmIVH&usp=drive_fs","stokRencana":155,"stokSPK":155,"terjual":0,"sisaStok":155,"funeralReady":144,"pctReady":0.9290322581,"status":"5. SEDANG PENGERJAAN","kontraktor":"BEN","tglMulai":"01 Agu 2026","tglSelesai":"14 Nov 2026","aktualProgress":34.5,"deviasi":-0.42,"keterangan":""},{"zona":"SAAKUURAA 1 & 2","type":"DD","accMakam":"https://drive.google.com/open?id=17cpv3r2cwVY08sP7e30AMGGDsZKvd9_Q&usp=drive_fs","stokRencana":10,"stokSPK":10,"terjual":7,"sisaStok":3,"funeralReady":10,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"EDI","tglMulai":"01 Agu 2026","tglSelesai":"30 Okt 2026","aktualProgress":49.816,"deviasi":-0.836,"keterangan":""},{"zona":"SAAKUURAA 1 & 2","type":"S","accMakam":"https://drive.google.com/open?id=17cpv3r2cwVY08sP7e30AMGGDsZKvd9_Q&usp=drive_fs","stokRencana":99,"stokSPK":99,"terjual":68,"sisaStok":31,"funeralReady":99,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"EDI","tglMulai":"01 Agu 2026","tglSelesai":"30 Okt 2026","aktualProgress":49.816,"deviasi":-0.836,"keterangan":""},{"zona":"ZANBAQAH","type":"DD","accMakam":"https://drive.google.com/open?id=1xlMzJDkUkJ41C_PWHndx6g43Q-YxehWj&usp=drive_fs","stokRencana":12,"stokSPK":12,"terjual":6,"sisaStok":6,"funeralReady":12,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"SAEPUL","tglMulai":"01 Agu 2026","tglSelesai":"30 Okt 2026","aktualProgress":56.204,"deviasi":9.868,"keterangan":""},{"zona":"ZANBAQAH","type":"S","accMakam":"https://drive.google.com/open?id=1xlMzJDkUkJ41C_PWHndx6g43Q-YxehWj&usp=drive_fs","stokRencana":123,"stokSPK":123,"terjual":50,"sisaStok":73,"funeralReady":123,"pctReady":1,"status":"5. SEDANG PENGERJAAN","kontraktor":"SAEPUL","tglMulai":"01 Agu 2026","tglSelesai":"30 Okt 2026","aktualProgress":56.204,"deviasi":9.868,"keterangan":""},{"zona":"UQHUWAAN","type":"DB","accMakam":"https://drive.google.com/open?id=1S66yNUxFwxDTvmTMvFu-Illwt1nfhob-&usp=drive_fs","stokRencana":6,"stokSPK":6,"terjual":6,"sisaStok":0,"funeralReady":6,"pctReady":1,"status":"6. SELESAI PROYEK","kontraktor":"SAEPUL","tglMulai":"06 Apr 2026","tglSelesai":"05 Jun 2026","aktualProgress":100,"deviasi":100,"keterangan":""},{"zona":"UQHUWAAN","type":"S","accMakam":"https://drive.google.com/open?id=1S66yNUxFwxDTvmTMvFu-Illwt1nfhob-&usp=drive_fs","stokRencana":76,"stokSPK":76,"terjual":61,"sisaStok":15,"funeralReady":76,"pctReady":1,"status":"6. SELESAI PROYEK","kontraktor":"SAEPUL","tglMulai":"06 Apr 2026","tglSelesai":"05 Jun 2026","aktualProgress":100,"deviasi":100,"keterangan":""}];
+            const TYPE_SUMMARY = [{"type":"SINGLE","stokRencana":1541,"stokSPK":1445,"terjual":608,"sisaStok":837,"funeralReady":1225,"pct":0.8477508651,"target":1500,"selisih":41},{"type":"DOUBLE","stokRencana":285,"stokSPK":146,"terjual":39,"sisaStok":107,"funeralReady":72,"pct":0.4931506849,"target":180,"selisih":105},{"type":"SUPER DOUBLE","stokRencana":20,"stokSPK":20,"terjual":2,"sisaStok":18,"funeralReady":20,"pct":1,"target":0,"selisih":20},{"type":"FAMILY","stokRencana":43,"stokSPK":22,"terjual":18,"sisaStok":4,"funeralReady":19,"pct":0.8636363636,"target":50,"selisih":-7},{"type":"SUPER FAMILY","stokRencana":39,"stokSPK":32,"terjual":18,"sisaStok":14,"funeralReady":20,"pct":0.625,"target":0,"selisih":39},{"type":"ROYAL FAMILY","stokRencana":4,"stokSPK":4,"terjual":0,"sisaStok":4,"funeralReady":2,"pct":0.5,"target":3,"selisih":1}];
+            const ZONA_PROGRESS = [{"zona":"UQHUWAAN","status":"6. SELESAI PROYEK","aktualProgress":100,"deviasi":100,"kontraktor":"SAEPUL","totalRencana":82,"totalSPK":82,"totalTerjual":67,"totalReady":82},{"zona":"YAASMIN J1","status":"5. SEDANG PENGERJAAN","aktualProgress":92.74,"deviasi":-7.261,"kontraktor":"NARA","totalRencana":112,"totalSPK":112,"totalTerjual":78,"totalReady":112},{"zona":"SAAKUURAA 3","status":"5. SEDANG PENGERJAAN","aktualProgress":86.96,"deviasi":-9.96,"kontraktor":"SAEPUL","totalRencana":75,"totalSPK":75,"totalTerjual":47,"totalReady":75},{"zona":"ZAHRATUN","status":"5. SEDANG PENGERJAAN","aktualProgress":82.04,"deviasi":-5.15,"kontraktor":"EDI","totalRencana":78,"totalSPK":78,"totalTerjual":73,"totalReady":77},{"zona":"YAASMIN I2","status":"5. SEDANG PENGERJAAN","aktualProgress":73.748,"deviasi":-26.251,"kontraktor":"MJU","totalRencana":233,"totalSPK":233,"totalTerjual":127,"totalReady":233},{"zona":"YAASMIN L","status":"5. SEDANG PENGERJAAN","aktualProgress":73.748,"deviasi":-26.251,"kontraktor":"MJU","totalRencana":165,"totalSPK":165,"totalTerjual":92,"totalReady":165},{"zona":"KAMIILIYA","status":"5. SEDANG PENGERJAAN","aktualProgress":57.66,"deviasi":42.12,"kontraktor":"PLIS","totalRencana":22,"totalSPK":22,"totalTerjual":1,"totalReady":12},{"zona":"WARDAH GG","status":"5. SEDANG PENGERJAAN","aktualProgress":56.608,"deviasi":-23.064,"kontraktor":"BEN","totalRencana":177,"totalSPK":177,"totalTerjual":42,"totalReady":174},{"zona":"ZANBAQAH","status":"5. SEDANG PENGERJAAN","aktualProgress":56.204,"deviasi":9.868,"kontraktor":"SAEPUL","totalRencana":135,"totalSPK":135,"totalTerjual":56,"totalReady":135},{"zona":"SAAKUURAA 1 & 2","status":"5. SEDANG PENGERJAAN","aktualProgress":49.816,"deviasi":-0.836,"kontraktor":"EDI","totalRencana":109,"totalSPK":109,"totalTerjual":75,"totalReady":109},{"zona":"KHUZAAMAA","status":"5. SEDANG PENGERJAAN","aktualProgress":34.5,"deviasi":-0.42,"kontraktor":"BEN","totalRencana":165,"totalSPK":165,"totalTerjual":0,"totalReady":152},{"zona":"YAASMIN I1","status":"5. SEDANG PENGERJAAN","aktualProgress":1.111,"deviasi":0.2953,"kontraktor":"MJU","totalRencana":53,"totalSPK":53,"totalTerjual":0,"totalReady":9},{"zona":"SAHLIYAH C1","status":"5. SEDANG PENGERJAAN","aktualProgress":1.111,"deviasi":0.2953,"kontraktor":"MJU","totalRencana":27,"totalSPK":27,"totalTerjual":0,"totalReady":0},{"zona":"WARDAH FF3","status":"5. SEDANG PENGERJAAN","aktualProgress":0,"deviasi":3.64,"kontraktor":"MJU","totalRencana":206,"totalSPK":206,"totalTerjual":0,"totalReady":0}];
+            const SITEPLAN = [{"date":"25 SEPTEMBER 2026","items":[{"zona":"WARDAH GG","foto":"https://photos.app.goo.gl/BKN85zVbDVfQyyhSA","status":"https://drive.google.com/open?id=18lDnsbO12GnWcWm2jqgb2RVyjaW1z6Mi&usp=drive_fs"},{"zona":"SAHLIYAH C1","foto":"https://photos.app.goo.gl/go93FTe4LYesnaVy5","status":"https://drive.google.com/open?id=100aDT_yU6V2u_XI0sQNr5s_NvgACzXkO&usp=drive_fs"},{"zona":"YAASMIIN I1","foto":"https://photos.app.goo.gl/rqYoVZogQpRwQMqT6","status":"https://drive.google.com/open?id=1sIAmm79SijeaFShrqp5iJU8tanekshIr&usp=drive_fs"},{"zona":"YASMIIN I2","foto":"https://photos.app.goo.gl/zWY93cQuicJsN8rx5","status":"https://drive.google.com/open?id=1YOQUzVM_ekieLY_uY9cjlEz3EYV_fd6c&usp=drive_fs"},{"zona":"YASMIIN  L","foto":"https://photos.app.goo.gl/19MeGcvE7b85Py1j8","status":"https://drive.google.com/open?id=142WHc_j8V2llBX3ZCjBOhWkghwt909aB&usp=drive_fs"},{"zona":"YAASMIIN J1","foto":"https://photos.app.goo.gl/sQxyNTVoAXfBMGrG7","status":"https://drive.google.com/open?id=1pt9s102nL_XiSGdOstu96aP9I8F1m3hy&usp=drive_fs"},{"zona":"KAMIILIYAA","foto":"https://photos.app.goo.gl/th7sWUzDUXhF44939","status":"https://drive.google.com/open?id=1vFbKBd4CnczeKQgSSRVdVIJP6cFiWXF_&usp=drive_fs"},{"zona":"ZAHRATUN","foto":"https://photos.app.goo.gl/TLapwgCzfrP4HCB17","status":"https://drive.google.com/open?id=1dWl3r7NoG1-MJjLTQR7uLV4Ap3995dZc&usp=drive_fs"},{"zona":"KHUZAAMAA","foto":"https://photos.app.goo.gl/cqH5ZtdSdicuQrnY7","status":"https://drive.google.com/open?id=1gMJlWlQozWWmyqRLSSFLoQCgo7Lz7vBq&usp=drive_fs"},{"zona":"ZANBAQAH","foto":"https://photos.app.goo.gl/9AdaRobhnt9j2WDY8","status":"https://drive.google.com/open?id=12tSk36um8gqyBsWS8bRZac-esdvYY9Va&usp=drive_fs"},{"zona":"SAAKUURAA 1&2","foto":"https://photos.app.goo.gl/2YFTUULYXwyFVeyw7","status":"https://drive.google.com/open?id=1iSLYaDRWJKRYnL2FT_QY0v4B516s8Bbn&usp=drive_fs"},{"zona":"SAAKUURAA 3","foto":"https://photos.app.goo.gl/ojjSMF1QeE4MjDwy6","status":"https://drive.google.com/open?id=1NEmb_7NI4ZdCLl3TNaP63hSG96NjNQAU&usp=drive_fs"}]},{"date":"15 SEPTEMBER 2026","items":[{"zona":"WARDAH GG","foto":"https://photos.app.goo.gl/D2HbtQB6qKCCyKgx8","status":"https://drive.google.com/open?id=1yA8g0rvkH6heon0NgfaDD63QKFOoos4G&usp=drive_fs"},{"zona":"SAHLIYAH C1","foto":"https://photos.app.goo.gl/yT2wb4RAvsSbnQgV8","status":"https://drive.google.com/open?id=1O-XZ7sO9DEoehDkmiq4QTVwCqb_9bDhT&usp=drive_fs"},{"zona":"YAASMIIN I1","foto":"https://photos.app.goo.gl/yT2wb4RAvsSbnQgV8","status":"https://drive.google.com/open?id=17QpX_Tm7VyQLAiWfA5O-EB3ZiUyY3BaJ&usp=drive_fs"},{"zona":"YASMIIN I2","foto":"https://photos.app.goo.gl/pnWu8ih4qDukTCAC7","status":"https://drive.google.com/open?id=1rF9pu2gy9IVGRmkLiEiIz7EcfO1qaBRV&usp=drive_fs"},{"zona":"YASMIIN  L","foto":"https://photos.app.goo.gl/pnWu8ih4qDukTCAC7","status":"https://drive.google.com/open?id=1N9ckQt5MtDyvvp4A_GUwxu1LOoi5lGbf&usp=drive_fs"},{"zona":"YAASMIIN J1","foto":"https://photos.app.goo.gl/fiHNL8jVuxmS2bTR9","status":"https://drive.google.com/open?id=1U60M2W0juSymHnhqNJ4T4OtXqBBQGfyS&usp=drive_fs"},{"zona":"KAMIILIYAA","foto":"https://photos.app.goo.gl/taoAvkwnmdT4wYzJ7","status":"https://drive.google.com/open?id=1t-TreIXPAucQ72-3OwMRndhmJhKkSjXU&usp=drive_fs"},{"zona":"ZAHRATUN","foto":"https://photos.app.goo.gl/ZS2148X6updSia8U9","status":"https://drive.google.com/open?id=1Z9MbEikgQijrY8ljlN_Mez1APARnVa1j&usp=drive_fs"},{"zona":"KHUZAAMAA","foto":"https://photos.app.goo.gl/EmKm9GxYqNRBNuva6","status":"https://drive.google.com/open?id=1SsALw0uuCxemq3RAIIxPpFW6ZjYTjUyf&usp=drive_fs"},{"zona":"ZANBAQAH","foto":"https://photos.app.goo.gl/irAoQp3hdEHbcEZs6","status":"https://drive.google.com/open?id=1S1-tm2PI_S70i1KpNfEXvd9GnRMlnPpX&usp=drive_fs"},{"zona":"SAAKUURAA 1&2","foto":"https://photos.app.goo.gl/aebEFFDAbLXYk982A","status":"https://drive.google.com/open?id=1ZXmr_gedn9eqCelNsu-gcD8GWumnmS4w&usp=drive_fs"},{"zona":"SAAKUURAA 3","foto":"https://photos.app.goo.gl/za4hujK2M2C6deKp6","status":"https://drive.google.com/open?id=1nXv2Xc_hSve2V15kPN7wQE9JxUpgyvEX&usp=drive_fs"}]},{"date":"8 September 2026","items":[{"zona":"WARDAH GG","foto":"https://photos.app.goo.gl/uJfHntrtFwtoDkx26","status":"2026.09.08 - PROGRES KAVLING.pdf"},{"zona":"YASMIIN I2 - L","foto":"https://photos.app.goo.gl/4MJhqHTx2msUEd6f7","status":""},{"zona":"KHUZAAMAA","foto":"https://photos.app.goo.gl/gTMNsHNu5fCDMEMG9","status":""},{"zona":"ZANBAQAH","foto":"https://photos.app.goo.gl/LqZ3fZddavih2cCa9","status":""},{"zona":"SAAKUURAA 1&2","foto":"https://photos.app.goo.gl/eNKsHcsUH9P6ZvUE9","status":""},{"zona":"SAAKUURAA 3","foto":"https://photos.app.goo.gl/gx7Ui1wNUPW1jK347","status":""}]}];
+            const CHANGELOG = [{"date":"2026.09.25","desc":"Zahratun, tambahan lot AD-01 dipindah ke AF-01"},{"date":"2026.09.25","desc":"Zanbaqah, tambah lot di A1-15, A-19"},{"date":"2026.09.25","desc":"Khuzaamaa, lot U-28 dan AA-54 dihilangkan, posisi menabrak struktur pagar"},{"date":"2026.09.25","desc":"UPDATE JUMLAH LOT DI KHUZAAMAA DAN ZANBAQAH TERKAIT LOT BARU DAN LOT HILANG"},{"date":"2026.09.25","desc":"UPDATE BOBOT PROGRES,  SITEPLAN STATUS KAVLING & LAPORAN FOTO"},{"date":"2026.09.15","desc":"ZAHRATUN DITAMBAH AD-01 (DOUBLE VAR. D)"},{"date":"2026.09.15","desc":"UPDATE JUMLAH FUNERAL READY"},{"date":"2026.09.15","desc":"UPDATE SITEPLAN STATUS KAVLING"},{"date":"2026.09.15","desc":"NEW SHEET KHUSUS LAPORAN FOTO DAN STATUS KAVLING"},{"date":"2026.09.15","desc":"UPDATE ACC MAKAM ZONA YAASMIIN I2 - L"},{"date":"2026.09.15","desc":"UPDATE FOTO LAPANGAN"},{"date":"2026.09.14","desc":"UPDATE JUMLAH LOT TERJUAL"},{"date":"2026.09.08","desc":"UPDATE BOBOT PROGRES"},{"date":"2026.09.08","desc":"PENAMBAHAN GAMBAR ACC MAKAM"},{"date":"2026.09.08","desc":"PERUBAHAN JUMLAH LOT YAASMIIN J1 (PERUBAHAN LOT 112 JADI 111 TERJADI KESALAHAN HITUNG DI APPROVAL)"},{"date":"2026.09.08","desc":"PERUBAHAN JUMLAH LOT YAASMIIN I2 (PERUBAHAN LOT 201 JADI 233, SESUAI LAPANGAN)"},{"date":"2026.09.08","desc":"PERUBAHAN JUMLAH LOT YAASMIIN L (PERUBAHAN LOT 144 JADI 165, SESUAI LAPANGAN)"},{"date":"2026.09.08","desc":"UPDATE JUMLAH LOT FUNERAL READY"},{"date":"2026.09.08","desc":"PENAMBAHAN LINK UNTUK LAPORAN FOTO"},{"date":"2026.09.08","desc":"PENAMBAHAN LINK UNTUK LAPORAN SITEPLAN STATUS KAVLING"},{"date":"2026.09.08","desc":"PERUBAHAN TOTAL PADA REKAP TYPE"},{"date":"2026.09.08","desc":"UPDATE JUMLAH LOT TERJUAL"}];
+
+            // === GENERATED TIMESTAMP ===
+            document.getElementById('genDate').textContent = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+            // === HELPERS ===
+            function pctNum(v) {
+                if (v === null || v === undefined) return 0;
+                const n = Number(v);
+                if (isNaN(n)) return 0;
+                return n <= 1 && n >= 0 ? n * 100 : n;
+            }
+
+            // === STATUS BADGE ===
+            function statusBadge(s) {
+                if (s.startsWith('6')) return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold border border-emerald-500/20 bg-emerald-500/10 text-emerald-500"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Selesai</span>';
+                if (s.startsWith('5')) return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold border border-primary/20 bg-primary/10 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>Pengerjaan</span>';
+                if (s.startsWith('2')) return '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold border border-border bg-muted/60 text-muted-foreground"><span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span>Tender</span>';
+                return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono border border-border bg-secondary text-muted-foreground">' + s + '</span>';
+            }
+
+            // === PROGRESS BAR ===
+            function progressBar(pct, small) {
+                const p = Math.min(100, Math.max(0, pct));
+                const h = small ? 'h-1.5' : 'h-2';
+                return '<div class="flex items-center gap-2 font-mono"><div class="flex-1 bg-muted rounded-full ' + h + ' overflow-hidden"><div class="progress-bar bg-primary ' + h + ' rounded-full" style="width:' + p + '%"></div></div><span class="text-[11px] text-muted-foreground font-semibold min-w-[38px] text-right">' + p.toFixed(1) + '%</span></div>';
+            }
+
+            // === DEVIASI BADGE ===
+            function devBadge(v) {
+                if (v === null || v === undefined || v === '') return '<span class="text-muted-foreground font-mono">-</span>';
+                const n = Number(v);
+                if (isNaN(n)) return '<span class="text-muted-foreground font-mono">-</span>';
+                if (n > 0) return '<span class="font-mono text-emerald-500 font-bold">+' + n.toFixed(1) + '%</span>';
+                if (n < 0) return '<span class="font-mono text-destructive font-bold">' + n.toFixed(1) + '%</span>';
+                return '<span class="text-muted-foreground font-mono">0.0%</span>';
+            }
+
+            // ===================================================================
+            // RENDER TABLE
+            // ===================================================================
+            let currentFilter = 'all';
+            let currentSort = { key: null, asc: true };
+
+            function renderTable() {
+                let filtered = ZONES;
+                if (currentFilter === 'pengerjaan') filtered = ZONES.filter(z => z.status.startsWith('5'));
+                else if (currentFilter === 'tender') filtered = ZONES.filter(z => z.status.startsWith('2'));
+                else if (currentFilter === 'selesai') filtered = ZONES.filter(z => z.status.startsWith('6'));
+
+                if (currentSort.key) {
+                    filtered = [...filtered].sort((a, b) => {
+                        let va = a[currentSort.key], vb = b[currentSort.key];
+                        if (typeof va === 'string') { va = va.toLowerCase(); vb = (vb || '').toLowerCase(); }
+                        if (va < vb) return currentSort.asc ? -1 : 1;
+                        if (va > vb) return currentSort.asc ? 1 : -1;
+                        return 0;
+                    });
+                }
+
+                const tbody = document.getElementById('zonaTableBody');
+                tbody.innerHTML = filtered.map(z => {
+                    const readyPct = pctNum(z.pctReady);
+                    const siteplanLink = z.accMakam && z.accMakam.startsWith('http')
+                        ? '<a href="' + z.accMakam + '" target="_blank" class="text-primary hover:underline font-mono inline-flex items-center gap-1 text-[11px] font-semibold">Buka ↗</a>'
+                        : '<span class="text-muted-foreground font-mono">-</span>';
+
+                    return '<tr class="zona-row">'
+                        + '<td class="px-4 py-3 font-semibold text-foreground whitespace-nowrap">' + z.zona + '</td>'
+                        + '<td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold border border-border bg-accent text-accent-foreground">' + z.type + '</span></td>'
+                        + '<td class="px-4 py-3 text-right font-mono text-foreground font-semibold">' + z.stokSPK.toLocaleString() + '</td>'
+                        + '<td class="px-4 py-3 text-right font-mono text-muted-foreground">' + z.terjual.toLocaleString() + '</td>'
+                        + '<td class="px-4 py-3 text-right font-mono text-muted-foreground">' + z.sisaStok.toLocaleString() + '</td>'
+                        + '<td class="px-4 py-3 text-right font-mono font-bold text-emerald-500">' + z.funeralReady.toLocaleString() + '</td>'
+                        + '<td class="px-4 py-3">' + progressBar(readyPct, true) + '</td>'
+                        + '<td class="px-4 py-3 whitespace-nowrap">' + statusBadge(z.status) + '</td>'
+                        + '<td class="px-4 py-3 text-muted-foreground font-mono">' + (z.kontraktor || '-') + '</td>'
+                        + '<td class="px-4 py-3">' + (z.aktualProgress > 0 ? progressBar(z.aktualProgress, false) : '<span class="font-mono text-muted-foreground">-</span>') + '</td>'
+                        + '<td class="px-4 py-3 whitespace-nowrap">' + devBadge(z.deviasi) + '</td>'
+                        + '<td class="px-4 py-3 font-mono text-muted-foreground whitespace-nowrap text-[11px]">' + (z.tglMulai ? z.tglMulai + ' — ' + z.tglSelesai : '-') + '</td>'
+                        + '<td class="px-4 py-3">' + siteplanLink + '</td>'
+                        + '</tr>';
+                }).join('');
+            }
+
+            // Filter Buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => {
+                        b.classList.remove('active');
+                        b.classList.add('text-muted-foreground');
+                    });
+                    btn.classList.add('active');
+                    btn.classList.remove('text-muted-foreground');
+                    currentFilter = btn.dataset.filter;
+                    renderTable();
+                });
+            });
+
+            // Sort Headers
+            document.querySelectorAll('[data-sort]').forEach(th => {
+                th.addEventListener('click', () => {
+                    const key = th.dataset.sort;
+                    if (currentSort.key === key) currentSort.asc = !currentSort.asc;
+                    else { currentSort.key = key; currentSort.asc = true; }
+                    renderTable();
+                });
+            });
+
+            renderTable();
+
+            // ===================================================================
+            // REKAP TABLE
+            // ===================================================================
+            const rekapBody = document.getElementById('rekapBody');
+            rekapBody.innerHTML = TYPE_SUMMARY.map(t => {
+                const pct = pctNum(t.pct);
+                const selisihColor = t.selisih < 0 ? 'text-destructive font-bold' : t.selisih > 0 ? 'text-emerald-500 font-bold' : 'text-muted-foreground';
+                return '<tr class="zona-row">'
+                    + '<td class="px-4 py-3 font-semibold text-foreground">' + t.type + '</td>'
+                    + '<td class="px-4 py-3 text-right font-mono text-muted-foreground">' + t.stokRencana.toLocaleString() + '</td>'
+                    + '<td class="px-4 py-3 text-right font-mono text-foreground font-semibold">' + t.stokSPK.toLocaleString() + '</td>'
+                    + '<td class="px-4 py-3 text-right font-mono text-muted-foreground">' + t.terjual.toLocaleString() + '</td>'
+                    + '<td class="px-4 py-3 text-right font-mono text-muted-foreground">' + t.sisaStok.toLocaleString() + '</td>'
+                    + '<td class="px-4 py-3 text-right font-mono text-emerald-500 font-bold">' + t.funeralReady.toLocaleString() + '</td>'
+                    + '<td class="px-4 py-3">' + progressBar(pct, true) + '</td>'
+                    + '<td class="px-4 py-3 text-right font-mono text-muted-foreground">' + (t.target || '-') + '</td>'
+                    + '<td class="px-4 py-3 text-right font-mono ' + selisihColor + '">' + (t.selisih > 0 ? '+' : '') + (t.selisih || '-') + '</td>'
+                    + '</tr>';
+            }).join('');
+
+            // ===================================================================
+            // SITEPLAN & FOTO
+            // ===================================================================
+            const siteplanTabs = document.getElementById('siteplanTabs');
+            const siteplanContent = document.getElementById('siteplanContent');
+
+            SITEPLAN.forEach((report, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold border transition-all cursor-pointer '
+                    + (idx === 0 ? 'bg-primary text-primary-foreground border-primary shadow-sm' : 'bg-card text-muted-foreground border-border hover:text-foreground hover:bg-accent');
+                btn.textContent = report.date || 'Laporan ' + (idx + 1);
+                btn.addEventListener('click', () => {
+                    siteplanTabs.querySelectorAll('button').forEach(b => {
+                        b.className = 'px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold border transition-all cursor-pointer bg-card text-muted-foreground border-border hover:text-foreground hover:bg-accent';
+                    });
+                    btn.className = 'px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold border transition-all cursor-pointer bg-primary text-primary-foreground border-primary shadow-sm';
+                    renderSiteplan(idx);
+                });
+                siteplanTabs.appendChild(btn);
+            });
+
+            function renderSiteplan(idx) {
+                const report = SITEPLAN[idx];
+                if (!report) { siteplanContent.innerHTML = '<p class="text-muted-foreground text-xs font-mono">Tidak ada data.</p>'; return; }
+                siteplanContent.innerHTML = report.items.map(item => {
+                    const fotoLink = item.foto && item.foto.startsWith('http')
+                        ? '<a href="' + item.foto + '" target="_blank" class="inline-flex items-center justify-between text-xs font-mono text-foreground hover:text-primary border border-border rounded-[calc(var(--radius)-6px)] px-3 py-1.5 bg-accent/30 hover:bg-accent transition-colors font-medium"><span>Dokumentasi Foto</span><span>↗</span></a>'
+                        : '';
+                    const statusLink = item.status && item.status.startsWith('http')
+                        ? '<a href="' + item.status + '" target="_blank" class="inline-flex items-center justify-between text-xs font-mono text-foreground hover:text-primary border border-border rounded-[calc(var(--radius)-6px)] px-3 py-1.5 bg-accent/30 hover:bg-accent transition-colors font-medium"><span>Siteplan PDF</span><span>↗</span></a>'
+                        : (item.status ? '<span class="text-xs font-mono text-muted-foreground">' + item.status + '</span>' : '');
+                    return '<div class="border border-border rounded-[calc(var(--radius)-4px)] p-3.5 bg-card hover:border-primary/40 transition-colors shadow-2xs">'
+                        + '<h4 class="font-bold text-foreground text-xs mb-2.5 pb-2 border-b border-border">' + item.zona + '</h4>'
+                        + '<div class="flex flex-col gap-1.5">' + fotoLink + statusLink + '</div>'
+                        + '</div>';
+                }).join('');
+            }
+            if (SITEPLAN.length) renderSiteplan(0);
+
+            // ===================================================================
+            // CHANGELOG (Timeline)
+            // ===================================================================
+            const changelogEl = document.getElementById('changelogContent');
+            const grouped = {};
+            CHANGELOG.forEach(e => {
+                if (!grouped[e.date]) grouped[e.date] = [];
+                grouped[e.date].push(e.desc);
+            });
+            changelogEl.innerHTML = '<div class="space-y-4">' + Object.entries(grouped).map(([date, items]) =>
+                '<div class="flex gap-4">'
+                + '<div class="flex flex-col items-center"><div class="w-2.5 h-2.5 rounded-full bg-primary mt-1.5 ring-4 ring-primary/20"></div><div class="w-px flex-1 bg-border mt-1"></div></div>'
+                + '<div class="pb-3 flex-1">'
+                + '<span class="font-mono text-xs font-bold text-foreground bg-accent px-2.5 py-0.5 rounded-full border border-border">' + date + '</span>'
+                + '<ul class="mt-2 space-y-1">' + items.map(i => '<li class="text-xs font-mono text-muted-foreground flex items-start gap-2"><span class="text-primary font-bold">&rsaquo;</span>' + i + '</li>').join('') + '</ul>'
+                + '</div></div>'
+            ).join('') + '</div>';
+
+            // ===================================================================
+            // CHART (Sinkron dengan Token OKLCH)
+            // ===================================================================
+            // OKLCH Chart colors mapped to standard CSS
+            const chartColors = [
+                '#388bfd', // chart-1 (Electric primary blue)
+                '#2da44e', // chart-2 (Emerald)
+                '#d29922', // chart-3 (Amber)
+                '#3fb950', // chart-4 (Bright Mint)
+                '#f85149', // chart-5 (Rose Red)
+                '#a371f7'  // chart-6 (Lilac)
+            ];
+
+            let stokChart;
+            function initChart() {
+                const ctx = document.getElementById('chartStokType');
+                stokChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: TYPE_SUMMARY.map(t => t.type),
+                        datasets: [{
+                            data: TYPE_SUMMARY.map(t => t.stokSPK),
+                            backgroundColor: chartColors,
+                            borderWidth: 2,
+                            borderColor: 'transparent',
+                            borderRadius: 4,
+                        }]
+                    },
+                    options: {
+                        cutout: '70%',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#0d1117',
+                                titleColor: '#ffffff',
+                                bodyColor: '#8b949e',
+                                borderColor: '#30363d',
+                                borderWidth: 1,
+                                padding: 9,
+                                cornerRadius: 8,
+                                callbacks: {
+                                    label: function (ctx) {
+                                        const t = TYPE_SUMMARY[ctx.dataIndex];
+                                        return ' ' + t.stokSPK.toLocaleString() + ' SPK (' + t.terjual.toLocaleString() + ' terjual)';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            initChart();
+
+            function updateChartTheme() {
+                if (!stokChart) return;
+                stokChart.update();
+            }
+
+            // Custom Chart Legend
+            const legendEl = document.getElementById('chartStokLegend');
+            const totalSPK = TYPE_SUMMARY.reduce((s, t) => s + t.stokSPK, 0);
+            legendEl.innerHTML = TYPE_SUMMARY.map((t, i) => {
+                const pct = totalSPK > 0 ? (t.stokSPK / totalSPK * 100).toFixed(0) : 0;
+                return '<div class="flex items-center justify-between gap-1 text-[11px]">'
+                    + '<div class="flex items-center gap-1.5 min-w-0">'
+                    + '<span class="w-2 h-2 rounded-full flex-shrink-0" style="background:' + chartColors[i] + '"></span>'
+                    + '<span class="text-muted-foreground truncate font-medium">' + t.type + '</span>'
+                    + '</div>'
+                    + '<span class="font-bold text-foreground">' + t.stokSPK + ' <span class="text-muted-foreground font-normal">(' + pct + '%)</span></span>'
+                    + '</div>';
+            }).join('');
+
+            // Progress per Zona List
+            const progData = ZONA_PROGRESS.filter(z => z.aktualProgress > 0);
+            const progEl = document.getElementById('progressBars');
+            if (progEl) {
+                progEl.innerHTML = progData.map(z => {
+                    const p = Math.min(100, Math.max(0, z.aktualProgress));
+                    const d = Number(z.deviasi);
+                    const isAhead = !isNaN(d) && d >= 0;
+                    const devBadge = isNaN(d) ? '' : (
+                        isAhead
+                            ? '<span class="text-[10px] font-mono text-emerald-500 font-bold">+' + d.toFixed(1) + '%</span>'
+                            : '<span class="text-[10px] font-mono text-destructive font-bold">' + d.toFixed(1) + '%</span>'
+                    );
+                    return '<div class="flex items-center gap-2 py-1.5 border-b border-border/50 last:border-0 hover:bg-accent/40 rounded-lg px-2 transition-colors">'
+                        + '<div class="w-28 truncate font-semibold text-foreground" title="' + z.zona + '">' + z.zona + '</div>'
+                        + '<div class="flex-1 min-w-[70px] bg-muted rounded-full h-1.5 overflow-hidden">'
+                        + '<div class="h-full bg-primary rounded-full progress-bar" style="width:' + p + '%"></div>'
+                        + '</div>'
+                        + '<span class="font-mono text-[11px] text-muted-foreground w-11 text-right font-medium">' + p.toFixed(1) + '%</span>'
+                        + '<div class="w-12 text-right">' + devBadge + '</div>'
+                        + '</div>';
+                }).join('');
+            }
+
+        })();
+    </script>
+</body>
+
+</html>

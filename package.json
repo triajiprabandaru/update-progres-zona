@@ -1,0 +1,14 @@
+{
+  "name": "dashboard-kavling",
+  "version": "1.0.0",
+  "description": "Web App Dashboard Progres Kavling Pemakaman 25HA",
+  "main": "generate.js",
+  "scripts": {
+    "start": "node generate.js",
+    "serve": "node generate.js",
+    "generate": "node generate.js --once"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}

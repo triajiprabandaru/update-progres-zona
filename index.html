@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Progres Kavling Pemakaman</title>
+  
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:is(.dark *));
+
+    :root {
+      --background: oklch(1.0000 0 0);
+      --foreground: oklch(0.1884 0.0128 248.5103);
+      --card: oklch(0.9784 0.0011 197.1387);
+      --card-foreground: oklch(0.1884 0.0128 248.5103);
+      --popover: oklch(1.0000 0 0);
+      --popover-foreground: oklch(0.1884 0.0128 248.5103);
+      --primary: oklch(0.6723 0.1606 244.9955);
+      --primary-foreground: oklch(1.0000 0 0);
+      --secondary: oklch(0.1884 0.0128 248.5103);
+      --secondary-foreground: oklch(1.0000 0 0);
+      --muted: oklch(0.9222 0.0013 286.3737);
+      --muted-foreground: oklch(0.48 0.0128 248.51);
+      --accent: oklch(0.9392 0.0166 250.8453);
+      --accent-foreground: oklch(0.6723 0.1606 244.9955);
+      --destructive: oklch(0.5765 0.2449 27.3241);
+      --destructive-foreground: oklch(1.0000 0 0);
+      --border: oklch(0.8897 0.0058 248.5103);
+      --input: oklch(0.8897 0.0058 248.5103);
+      --ring: oklch(0.6723 0.1606 244.9955);
+      --chart-1: oklch(0.6723 0.1606 244.9955);
+      --chart-2: oklch(0.6907 0.1554 160.3454);
+      --chart-3: oklch(0.8214 0.1600 82.5337);
+      --chart-4: oklch(0.7064 0.1822 151.7125);
+      --chart-5: oklch(0.5919 0.2186 10.5826);
+      --sidebar: oklch(0.9784 0.0011 197.1387);
+      --sidebar-foreground: oklch(0.1884 0.0128 248.5103);
+      --sidebar-primary: oklch(0.6723 0.1606 244.9955);
+      --sidebar-primary-foreground: oklch(1.0000 0 0);
+      --sidebar-accent: oklch(0.9392 0.0166 250.8453);
+      --sidebar-accent-foreground: oklch(0.6723 0.1606 244.9955);
+      --sidebar-border: oklch(0.8897 0.0058 248.5103);
+      --sidebar-ring: oklch(0.6723 0.1606 244.9955);
+      --font-sans: 'Open Sans', system-ui, sans-serif;
+      --font-serif: Georgia, serif;
+      --font-mono: 'JetBrains Mono', Menlo, monospace;
+      --radius: 1.3rem;
+      --shadow-color: rgba(29,161,242,0.25);
+    }
+
+    .dark {
+      --background: oklch(0.1448 0.0112 248.5103);
+      --foreground: oklch(0.9222 0.0013 286.3737);
+      --card: oklch(0.1622 0.0117 248.5103);
+      --card-foreground: oklch(0.9222 0.0013 286.3737);
+      --popover: oklch(0.1622 0.0117 248.5103);
+      --popover-foreground: oklch(0.9222 0.0013 286.3737);
+      --primary: oklch(0.6723 0.1606 244.9955);
+      --primary-foreground: oklch(1.0000 0 0);
+      --secondary: oklch(0.9622 0.0035 219.5331);
+      --secondary-foreground: oklch(0.1884 0.0128 248.5103);
+      --muted: oklch(0.2090 0 0);
+      --muted-foreground: oklch(0.5637 0.0078 247.9662);
+      --accent: oklch(0.1928 0.0331 242.5459);
+      --accent-foreground: oklch(0.6692 0.1607 245.0110);
+      --destructive: oklch(0.6188 0.2376 25.7658);
+      --destructive-foreground: oklch(1.0000 0 0);
+      --border: oklch(0.2674 0.0047 248.0045);
+      --input: oklch(0.3020 0.0288 244.8244);
+      --ring: oklch(0.6818 0.1584 243.3540);
+      --chart-1: oklch(0.6723 0.1606 244.9955);
+      --chart-2: oklch(0.6907 0.1554 160.3454);
+      --chart-3: oklch(0.8214 0.1600 82.5337);
+      --chart-4: oklch(0.7064 0.1822 151.7125);
+      --chart-5: oklch(0.5919 0.2186 10.5826);
+      --sidebar: oklch(0.2097 0.0080 274.5332);
+      --sidebar-foreground: oklch(0.8853 0 0);
+      --sidebar-primary: oklch(0.6818 0.1584 243.3540);
+      --sidebar-primary-foreground: oklch(1.0000 0 0);
+      --sidebar-accent: oklch(0.1928 0.0331 242.5459);
+      --sidebar-accent-foreground: oklch(0.6692 0.1607 245.0110);
+      --sidebar-border: oklch(0.3795 0.0220 240.5943);
+      --sidebar-ring: oklch(0.6818 0.1584 243.3540);
+    }
+  </style>
+
+  <style type="text/tailwindcss">
+    @theme inline {
+      --color-background: var(--background);
+      --color-foreground: var(--foreground);
+      --color-card: var(--card);
+      --color-card-foreground: var(--card-foreground);
+      --color-popover: var(--popover);
+      --color-popover-foreground: var(--popover-foreground);
+      --color-primary: var(--primary);
+      --color-primary-foreground: var(--primary-foreground);
+      --color-secondary: var(--secondary);
+      --color-secondary-foreground: var(--secondary-foreground);
+      --color-muted: var(--muted);
+      --color-muted-foreground: var(--muted-foreground);
+      --color-accent: var(--accent);
+      --color-accent-foreground: var(--accent-foreground);
+      --color-destructive: var(--destructive);
+      --color-destructive-foreground: var(--destructive-foreground);
+      --color-border: var(--border);
+      --color-input: var(--input);
+      --color-ring: var(--ring);
+      --color-chart-1: var(--chart-1);
+      --color-chart-2: var(--chart-2);
+      --color-chart-3: var(--chart-3);
+      --color-chart-4: var(--chart-4);
+      --color-chart-5: var(--chart-5);
+      --color-sidebar: var(--sidebar);
+      --color-sidebar-foreground: var(--sidebar-foreground);
+      --color-sidebar-primary: var(--sidebar-primary);
+      --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+      --color-sidebar-accent: var(--sidebar-accent);
+      --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+      --color-sidebar-border: var(--sidebar-border);
+      --color-sidebar-ring: var(--sidebar-ring);
+      --font-sans: var(--font-sans);
+      --font-mono: var(--font-mono);
+      --radius-sm: calc(var(--radius) - 4px);
+      --radius-md: calc(var(--radius) - 2px);
+      --radius-lg: var(--radius);
+      --radius-xl: calc(var(--radius) + 4px);
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--foreground);
+      font-family: var(--font-sans);
+    }
+
+    .progress-bar { transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+    .zona-row { transition: background-color 0.15s; }
+    .zona-row:hover { background-color: var(--accent); }
+    .tab-btn.active { background-color: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+    .scrollbar-thin::-webkit-scrollbar { width: 4px; height: 4px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.4s ease-out both; }
+    .slide-down { animation: slideDown 0.3s ease-out both; }
+
+    /* Toast */
+    .toast { position: fixed; top: 1rem; right: 1rem; z-index: 100; padding: 0.75rem 1.25rem; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); color: var(--foreground); font-size: 0.8rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: translateX(120%); transition: transform 0.3s ease; }
+    .toast.show { transform: translateX(0); }
+
+    /* Drop zone overlay */
+    .drop-overlay { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; }
+    .drop-overlay.active { display: flex; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <header class="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-[var(--radius)] bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-foreground">Progres Kavling Pemakaman</h1>
+              <span class="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full border border-border bg-accent text-accent-foreground">25 HA</span>
+            </div>
+            <p class="text-xs text-muted-foreground mt-0.5 font-medium">Monitoring operasional, ketersediaan unit &amp; SPK fisik</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex items-center gap-2.5 text-xs font-mono border-r border-border pr-3.5" id="headerDateSection" style="display:none">
+            <span class="flex items-center gap-1.5 text-muted-foreground font-medium">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span id="headerReportDate"></span>
+            </span>
+            <span class="text-muted-foreground/40">|</span>
+            <span class="text-muted-foreground" id="genDate"></span>
+          </div>
+
+          <select id="historySelect" class="hidden text-xs font-mono bg-card border border-border rounded-[calc(var(--radius)-4px)] px-2.5 py-1.5 text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring" title="Riwayat Upload"></select>
+
+          <button id="uploadBtn" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-[calc(var(--radius)-4px)] text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer shadow-sm" title="Upload File Excel">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+            Upload Excel
+          </button>
+          <input type="file" id="excelFileInput" accept=".xlsx,.xls" class="hidden">
+
+          <button id="themeToggle" class="w-9 h-9 rounded-[calc(var(--radius)-4px)] border border-border bg-card flex items-center justify-center text-foreground hover:bg-accent transition-colors cursor-pointer" title="Toggle Light/Dark Theme">
+            <svg id="moonIcon" class="w-4 h-4 hidden dark:block text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            <svg id="sunIcon" class="w-4 h-4 block dark:hidden text-amber-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="uploadScreen" class="min-h-[70vh] flex items-center justify-center">
+    <div class="max-w-md w-full mx-auto text-center">
+      <div class="bg-card rounded-[var(--radius)] border-2 border-dashed border-border hover:border-primary/60 transition-colors p-10 cursor-pointer" id="dropZone">
+        <div class="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/></svg>
+        </div>
+        <h2 class="text-lg font-bold text-foreground mb-2">Upload File Excel</h2>
+        <p class="text-sm text-muted-foreground mb-4">Drag & drop file .xlsx ke sini, atau klik untuk memilih file</p>
+        <p class="text-xs text-muted-foreground font-mono">Format: Dashboard Progres Kavling Pemakaman 25HA (.xlsx)</p>
+      </div>
+    </div>
+  </div>
+
+  <main id="dashboardContent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6" style="display:none">
+    
+    <section id="kpiSection" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
+      <div class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+        <div class="flex items-center justify-between text-muted-foreground mb-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider">Rencana</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        </div>
+        <p class="text-2xl font-bold font-mono tracking-tight text-foreground" id="kpiRencana">—</p>
+        <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">Total kavling</p>
+      </div>
+      
+      <div class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+        <div class="flex items-center justify-between text-muted-foreground mb-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider">SPK</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+        </div>
+        <p class="text-2xl font-bold font-mono tracking-tight text-foreground" id="kpiSPK">—</p>
+        <p class="text-[11px] text-muted-foreground mt-0.5 font-medium" id="kpiSPKPct"></p>
+      </div>
+      
+      <div class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+        <div class="flex items-center justify-between text-muted-foreground mb-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider">Terjual</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+        </div>
+        <p class="text-2xl font-bold font-mono tracking-tight text-foreground" id="kpiTerjual">—</p>
+        <p class="text-[11px] text-muted-foreground mt-0.5 font-medium" id="kpiTerjualPct"></p>
+      </div>
+      
+      <div class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+        <div class="flex items-center justify-between text-muted-foreground mb-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider">Sisa Stok</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <p class="text-2xl font-bold font-mono tracking-tight text-foreground" id="kpiSisa">—</p>
+        <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">Dari SPK fisik</p>
+      </div>
+      
+      <div class="bg-card rounded-[var(--radius)] border border-border p-4 shadow-sm hover:border-primary/40 transition-colors">
+        <div class="flex items-center justify-between text-muted-foreground mb-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider">Ready</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+        </div>
+        <p class="text-2xl font-bold font-mono tracking-tight text-foreground" id="kpiReady">—</p>
+        <p class="text-[11px] text-muted-foreground mt-0.5 font-medium">Funeral ready</p>
+      </div>
+      
+      <div class="bg-primary text-primary-foreground rounded-[var(--radius)] border border-primary p-4 shadow-sm">
+        <div class="flex items-center justify-between text-primary-foreground/80 mb-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider">% Ready</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </div>
+        <p class="text-2xl font-bold font-mono tracking-tight" id="kpiPctReady">—</p>
+        <p class="text-[11px] text-primary-foreground/80 mt-0.5 font-medium">Dari total SPK</p>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div class="lg:col-span-3 bg-card rounded-[var(--radius)] border border-border p-5 flex flex-col justify-between shadow-sm">
+        <div>
+          <h3 class="text-sm font-bold text-foreground mb-4 flex items-center justify-between">
+            Status Zona <span class="bg-accent text-accent-foreground text-[10px] px-2 py-0.5 rounded-full" id="statusTotalZona"></span>
+          </h3>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span class="text-xs font-medium text-muted-foreground">Selesai Proyek</span>
+              </div>
+              <span class="text-sm font-bold font-mono text-foreground" id="statusSelesai">0</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+                <span class="text-xs font-medium text-muted-foreground">Pengerjaan</span>
+              </div>
+              <span class="text-sm font-bold font-mono text-foreground" id="statusPengerjaan">0</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-muted-foreground"></span>
+                <span class="text-xs font-medium text-muted-foreground">Tender</span>
+              </div>
+              <span class="text-sm font-bold font-mono text-foreground" id="statusTender">0</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-6 pt-5 border-t border-border">
+          <div class="flex items-center justify-between text-xs mb-2">
+            <span class="font-medium text-muted-foreground">Penyerapan SPK</span>
+            <span class="font-bold font-mono text-foreground" id="statusPenyerapanPct"></span>
+          </div>
+          <div class="w-full h-1.5 bg-accent rounded-full overflow-hidden mb-2">
+            <div class="h-full bg-primary progress-bar" id="statusPenyerapanBar"></div>
+          </div>
+          <div class="flex items-center justify-between text-[10px] text-muted-foreground">
+            <span id="statusTerjualText"></span>
+            <span id="statusSisaText"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-4 bg-card rounded-[var(--radius)] border border-border p-5 shadow-sm flex flex-col justify-between">
+        <h3 class="text-sm font-bold text-foreground mb-4 flex items-center justify-between">
+          Distribusi SPK per Tipe
+          <span class="bg-accent text-accent-foreground text-[10px] px-2 py-0.5 rounded-full font-mono" id="chartStokHeaderSPK"></span>
+        </h3>
+        <div class="flex-1 flex items-center justify-center min-h-[200px]">
+          <div class="relative w-full max-w-[200px] aspect-square">
+            <canvas id="chartStokType"></canvas>
+          </div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2 justify-center text-[10px]" id="chartStokLegend"></div>
+      </div>
+
+      <div class="lg:col-span-5 bg-card rounded-[var(--radius)] border border-border p-5 shadow-sm">
+        <h3 class="text-sm font-bold text-foreground mb-4">Progres Aktual Zona Aktif</h3>
+        <div class="space-y-4 max-h-[250px] overflow-y-auto pr-2 scrollbar-thin" id="progressBars"></div>
+      </div>
+    </section>
+
+    <section class="bg-card rounded-[var(--radius)] border border-border overflow-hidden shadow-sm">
+      <div class="p-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-muted/20">
+        <h3 class="text-sm font-bold text-foreground">Detail Progres Kavling</h3>
+        <div class="flex flex-wrap gap-2" id="tableFilters">
+          <button class="px-3 py-1 text-[11px] font-semibold rounded-full border border-primary bg-primary text-primary-foreground tab-btn active" data-filter="all">Semua</button>
+          <button class="px-3 py-1 text-[11px] font-semibold rounded-full border border-border bg-card text-muted-foreground hover:bg-accent tab-btn" data-filter="pengerjaan">Pengerjaan</button>
+          <button class="px-3 py-1 text-[11px] font-semibold rounded-full border border-border bg-card text-muted-foreground hover:bg-accent tab-btn" data-filter="tender">Tender</button>
+          <button class="px-3 py-1 text-[11px] font-semibold rounded-full border border-border bg-card text-muted-foreground hover:bg-accent tab-btn" data-filter="selesai">Selesai</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left whitespace-nowrap" id="zonaTable">
+          <thead class="bg-accent/50 text-muted-foreground uppercase text-[10px] font-bold">
+            <tr>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground" data-sort="zona">Zona</th>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground" data-sort="type">Tipe</th>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground text-right" data-sort="stokSPK">SPK</th>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground text-right" data-sort="terjual">Terjual</th>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground text-right" data-sort="sisaStok">Sisa</th>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground text-right" data-sort="funeralReady">Ready</th>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground text-right" data-sort="pctReady">% Ready</th>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground" data-sort="status">Status</th>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground" data-sort="kontraktor">Kontraktor</th>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground" data-sort="aktualProgress">Progress</th>
+              <th class="px-4 py-3 cursor-pointer hover:text-foreground" data-sort="deviasi">Deviasi</th>
+              <th class="px-4 py-3">Jadwal</th>
+              <th class="px-4 py-3 text-center">Siteplan</th>
+            </tr>
+          </thead>
+          <tbody id="zonaTableBody" class="divide-y divide-border"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="bg-card rounded-[var(--radius)] border border-border overflow-hidden shadow-sm">
+      <div class="p-4 border-b border-border bg-muted/20">
+        <h3 class="text-sm font-bold text-foreground">Rekapitulasi per Tipe Kavling</h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left whitespace-nowrap">
+          <thead class="bg-accent/50 text-muted-foreground uppercase text-[10px] font-bold">
+            <tr>
+              <th class="px-4 py-3">Tipe Kavling</th>
+              <th class="px-4 py-3 text-right">Rencana</th>
+              <th class="px-4 py-3 text-right">SPK</th>
+              <th class="px-4 py-3 text-right">Terjual</th>
+              <th class="px-4 py-3 text-right">Sisa Stok</th>
+              <th class="px-4 py-3 text-right">Funeral Ready</th>
+              <th class="px-4 py-3 text-right">% Ready</th>
+              <th class="px-4 py-3 text-right">Target</th>
+              <th class="px-4 py-3 text-right">Selisih</th>
+            </tr>
+          </thead>
+          <tbody id="rekapBody" class="divide-y divide-border"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="bg-card rounded-[var(--radius)] border border-border overflow-hidden shadow-sm">
+      <div class="p-4 border-b border-border bg-muted/20">
+        <h3 class="text-sm font-bold text-foreground">Status Siteplan & Foto Udara</h3>
+      </div>
+      <div class="p-5">
+        <div class="flex gap-2 mb-4 flex-wrap" id="siteplanTabs"></div>
+        <div id="siteplanContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5"></div>
+      </div>
+    </section>
+
+    <section class="bg-card rounded-[var(--radius)] border border-border overflow-hidden shadow-sm">
+      <div class="p-4 border-b border-border bg-muted/20">
+        <h3 class="text-sm font-bold text-foreground">Changelog & Update History</h3>
+      </div>
+      <div class="p-5">
+        <div id="changelogContent" class="space-y-4"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-border mt-12 py-6 bg-card text-center text-xs text-muted-foreground font-mono">
+    <p>Dashboard Progres Kavling Pemakaman 25HA &bull; OKLCH Electric Blue Theme</p>
+    <p class="mt-1">Upload file Excel untuk memperbarui data dashboard</p>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="dropOverlay" class="drop-overlay">
+    <div class="bg-card rounded-[var(--radius)] border-2 border-dashed border-primary p-10 text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary mx-auto mb-3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+      <p class="text-lg font-bold text-foreground">Drop file Excel di sini</p>
+    </div>
+  </div>
+
+  <script>
+    // Utilities
+    function num(v) { return (v === null || v === undefined || v === '') ? 0 : Number(v) || 0; }
+    function str(v) { return (v === null || v === undefined) ? '' : String(v).trim(); }
+    function excelDateToStr(serial) {
+      if (!serial || typeof serial !== 'number' || serial < 1000) return '';
+      const d = new Date((serial - 25569) * 86400000);
+      const dd = d.getUTCDate().toString().padStart(2, '0');
+      const mm = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][d.getUTCMonth()];
+      return dd + ' ' + mm + ' ' + d.getUTCFullYear();
+    }
+    function cellVal(ws, r, c) {
+      const addr = XLSX.utils.encode_cell({ r, c });
+      const cell = ws[addr];
+      return cell ? cell.v : null;
+    }
+    function pctNum(v) {
+      const n = parseFloat(v);
+      if (isNaN(n)) return 0;
+      return n <= 1 ? n * 100 : n;
+    }
+
+    // Excel Parsers
+    function processProgresZona(ws) {
+      const zones = [];
+      for (let r = 5; r <= 46; r++) {
+        const zona = str(cellVal(ws, r, 1));
+        if (!zona) continue;
+        zones.push({
+          zona: zona,
+          type: str(cellVal(ws, r, 2)),
+          accMakam: str(cellVal(ws, r, 3)),
+          stokRencana: num(cellVal(ws, r, 4)),
+          stokSPK: num(cellVal(ws, r, 5)),
+          terjual: num(cellVal(ws, r, 6)),
+          sisaStok: num(cellVal(ws, r, 7)),
+          funeralReady: num(cellVal(ws, r, 8)),
+          pctReady: num(cellVal(ws, r, 9)),
+          status: str(cellVal(ws, r, 10)),
+          kontraktor: str(cellVal(ws, r, 11)),
+          tglMulai: excelDateToStr(cellVal(ws, r, 12)),
+          tglSelesai: excelDateToStr(cellVal(ws, r, 13)),
+          aktualProgress: num(cellVal(ws, r, 14)),
+          deviasi: num(cellVal(ws, r, 15)),
+          keterangan: str(cellVal(ws, r, 16))
+        });
+      }
+      return zones;
+    }
+
+    function processTotalByType(ws) {
+      const details = [];
+      for (let r = 3; r <= 15; r++) {
+        const code = str(cellVal(ws, r, 0));
+        if (!code) continue;
+        details.push({
+          code: code,
+          name: str(cellVal(ws, r, 1)),
+          stokRencana: num(cellVal(ws, r, 2)),
+          stokSPK: num(cellVal(ws, r, 3)),
+          terjual: num(cellVal(ws, r, 4)),
+          sisaStok: num(cellVal(ws, r, 5)),
+          funeralReady: num(cellVal(ws, r, 6)),
+          pct: num(cellVal(ws, r, 7))
+        });
+      }
+      const summary = [];
+      for (let r = 20; r <= 25; r++) {
+        const type = str(cellVal(ws, r, 0));
+        if (!type || type.toLowerCase().includes('total')) continue;
+        summary.push({
+          type: type,
+          stokRencana: num(cellVal(ws, r, 1)),
+          stokSPK: num(cellVal(ws, r, 2)),
+          terjual: num(cellVal(ws, r, 3)),
+          sisaStok: num(cellVal(ws, r, 4)),
+          funeralReady: num(cellVal(ws, r, 5)),
+          pct: num(cellVal(ws, r, 6)),
+          target: num(cellVal(ws, r, 7)),
+          selisih: num(cellVal(ws, r, 8))
+        });
+      }
+      return { details, summary };
+    }
+
+    function processSiteplan(ws) {
+      const dates = [];
+      const colStarts = [2, 7, 12];
+      for (const c of colStarts) {
+        const dateStr = str(cellVal(ws, 2, c));
+        if (!dateStr) continue;
+        const items = [];
+        for (let r = 5; r <= 17; r++) {
+          const zona = str(cellVal(ws, r, c + 1));
+          if (!zona) continue;
+          items.push({
+            zona: zona,
+            foto: str(cellVal(ws, r, c + 2)),
+            status: str(cellVal(ws, r, c + 3))
+          });
+        }
+        dates.push({ date: dateStr, items: items });
+      }
+      return dates;
+    }
+
+    function processChangelog(ws) {
+      const logs = [];
+      for (let r = 3; r <= 30; r++) {
+        const date = str(cellVal(ws, r, 0));
+        const desc = str(cellVal(ws, r, 1));
+        if (date || desc) logs.push({ date, desc });
+      }
+      return logs;
+    }
+
+    function calculateSummary(zones) {
+      const s = { totalRencana: 0, totalSPK: 0, totalTerjual: 0, totalSisa: 0, totalReady: 0, statusCounts: {}, zonaProgress: [] };
+      const zonaMap = new Map();
+      for (const z of zones) {
+        s.totalRencana += z.stokRencana;
+        s.totalSPK += z.stokSPK;
+        s.totalTerjual += z.terjual;
+        s.totalSisa += z.sisaStok;
+        s.totalReady += z.funeralReady;
+        const statusKey = z.status.startsWith('2') ? 'tender' : z.status.startsWith('5') ? 'pengerjaan' : z.status.startsWith('6') ? 'selesai' : 'lainnya';
+        s.statusCounts[statusKey] = (s.statusCounts[statusKey] || 0) + 1;
+        if (!zonaMap.has(z.zona)) {
+          zonaMap.set(z.zona, { zona: z.zona, status: z.status, aktualProgress: z.aktualProgress, deviasi: z.deviasi, kontraktor: z.kontraktor, totalRencana: 0, totalSPK: 0, totalTerjual: 0, totalReady: 0 });
+        }
+        const zm = zonaMap.get(z.zona);
+        zm.totalRencana += z.stokRencana;
+        zm.totalSPK += z.stokSPK;
+        zm.totalTerjual += z.terjual;
+        zm.totalReady += z.funeralReady;
+      }
+      s.pctReady = s.totalSPK > 0 ? ((s.totalReady / s.totalSPK) * 100).toFixed(1) : '0';
+      s.zonaProgress = Array.from(zonaMap.values()).filter(z => z.status.startsWith('5') || z.status.startsWith('6')).sort((a, b) => b.aktualProgress - a.aktualProgress);
+      return s;
+    }
+
+    function parseExcelFile(arrayBuffer, fileName) {
+      const wb = XLSX.read(arrayBuffer, { type: 'array' });
+      const zones = processProgresZona(wb.Sheets[wb.SheetNames[0]]);
+      const types = processTotalByType(wb.Sheets[wb.SheetNames[1]]);
+      const siteplan = processSiteplan(wb.Sheets[wb.SheetNames[2]]);
+      const changelog = processChangelog(wb.Sheets[wb.SheetNames[3]]);
+      const summary = calculateSummary(zones);
+      const dateCell = cellVal(wb.Sheets[wb.SheetNames[0]], 0, 2);
+      const reportDate = dateCell ? String(dateCell) : new Date().toLocaleDateString('id-ID');
+      return { zones, types, siteplan, changelog, summary, reportDate, fileName, uploadedAt: new Date().toISOString() };
+    }
+
+    // Storage
+    const STORAGE_KEY = 'kavling_dashboard_history';
+    function getHistory() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
+    function saveHistory(list) { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+    function addToHistory(dataset) {
+      const list = getHistory();
+      const entry = { id: Date.now(), ...dataset };
+      list.push(entry);
+      if (list.length > 10) list.shift();
+      saveHistory(list);
+      return entry;
+    }
+    function updateHistoryDropdown() {
+      const list = getHistory();
+      const select = document.getElementById('historySelect');
+      if (list.length === 0) { select.classList.add('hidden'); return; }
+      select.classList.remove('hidden');
+      select.innerHTML = list.map((h, i) => `<option value="${h.id}" ${i === list.length - 1 ? 'selected' : ''}>${h.fileName || 'Data'} — ${new Date(h.uploadedAt).toLocaleDateString('id-ID')}</option>`).join('');
+    }
+
+    // UI Helpers
+    function statusBadge(s) {
+      if (!s) return '-';
+      let c = 'bg-accent text-muted-foreground border-border';
+      if (s.startsWith('6')) c = 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+      else if (s.startsWith('5')) c = 'bg-primary/10 text-primary border-primary/20';
+      else if (s.startsWith('2')) c = 'bg-amber-500/10 text-amber-500 border-amber-500/20';
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold border ${c}">${s}</span>`;
+    }
+
+    function progressBar(pct, small) {
+      let p = pctNum(pct);
+      let h = small ? 'h-1.5' : 'h-2';
+      let c = p >= 100 ? 'bg-emerald-500' : 'bg-primary';
+      return `<div class="w-full ${h} bg-accent rounded-full overflow-hidden flex-shrink-0"><div class="${h} ${c} progress-bar" style="width: ${p}%"></div></div>`;
+    }
+
+    function devBadge(v) {
+      let n = pctNum(v);
+      if (Math.abs(n) < 0.1) return `<span class="text-muted-foreground">-</span>`;
+      let c = n < 0 ? 'text-destructive bg-destructive/10' : 'text-emerald-500 bg-emerald-500/10';
+      let sign = n > 0 ? '+' : '';
+      return `<span class="inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold font-mono ${c}">${sign}${n.toFixed(1)}%</span>`;
+    }
+
+    let currentDataset = null;
+    let chartInstance = null;
+    let tableFilter = 'all';
+    let tableSort = { key: 'zona', dir: 1 };
+    const chartColors = ['#388bfd', '#2da44e', '#d29922', '#3fb950', '#f85149', '#a371f7'];
+
+    function renderDashboard(dataset) {
+      currentDataset = dataset;
+      document.getElementById('uploadScreen').style.display = 'none';
+      document.getElementById('dashboardContent').style.display = 'block';
+      
+      const s = dataset.summary;
+      
+      // Headers
+      document.getElementById('headerDateSection').style.display = 'flex';
+      document.getElementById('headerReportDate').textContent = dataset.reportDate;
+      document.getElementById('genDate').textContent = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'});
+      
+      // KPIs
+      document.getElementById('kpiRencana').textContent = s.totalRencana.toLocaleString();
+      document.getElementById('kpiSPK').textContent = s.totalSPK.toLocaleString();
+      document.getElementById('kpiSPKPct').textContent = s.totalRencana > 0 ? ((s.totalSPK / s.totalRencana)*100).toFixed(1) + '% dari rencana' : '-';
+      document.getElementById('kpiTerjual').textContent = s.totalTerjual.toLocaleString();
+      document.getElementById('kpiTerjualPct').textContent = s.totalSPK > 0 ? ((s.totalTerjual / s.totalSPK)*100).toFixed(1) + '% dari SPK' : '-';
+      document.getElementById('kpiSisa').textContent = s.totalSisa.toLocaleString();
+      document.getElementById('kpiReady').textContent = s.totalReady.toLocaleString();
+      document.getElementById('kpiPctReady').textContent = s.pctReady + '%';
+      
+      // Status Overview
+      const totZona = s.zonaProgress.length;
+      document.getElementById('statusTotalZona').textContent = totZona + ' Zona';
+      document.getElementById('statusSelesai').textContent = s.statusCounts.selesai || 0;
+      document.getElementById('statusPengerjaan').textContent = s.statusCounts.pengerjaan || 0;
+      document.getElementById('statusTender').textContent = s.statusCounts.tender || 0;
+      
+      const terjualPct = s.totalSPK > 0 ? (s.totalTerjual / s.totalSPK) * 100 : 0;
+      document.getElementById('statusPenyerapanPct').textContent = terjualPct.toFixed(1) + '%';
+      document.getElementById('statusPenyerapanBar').style.width = terjualPct + '%';
+      document.getElementById('statusTerjualText').textContent = s.totalTerjual.toLocaleString() + ' Terjual';
+      document.getElementById('statusSisaText').textContent = s.totalSisa.toLocaleString() + ' Sisa';
+
+      // Chart
+      if (chartInstance) chartInstance.destroy();
+      const ctx = document.getElementById('chartStokType');
+      const typeSummary = dataset.types.summary;
+      document.getElementById('chartStokHeaderSPK').textContent = s.totalSPK.toLocaleString() + ' SPK';
+      
+      chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: typeSummary.map(t => t.type),
+          datasets: [{ data: typeSummary.map(t => t.stokSPK), backgroundColor: chartColors, borderWidth: 2, borderColor: 'transparent', borderRadius: 4 }]
+        },
+        options: {
+          cutout: '70%', responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: '#0d1117', titleColor: '#ffffff', bodyColor: '#8b949e', borderColor: '#30363d', borderWidth: 1, padding: 9, cornerRadius: 8,
+              callbacks: { label: function(c) { const t = typeSummary[c.dataIndex]; return ` ${t.stokSPK.toLocaleString()} SPK (${t.terjual.toLocaleString()} terjual)`; } }
+            }
+          }
+        }
+      });
+      
+      let legHtml = '';
+      typeSummary.forEach((t, i) => {
+        legHtml += `<div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:${chartColors[i%chartColors.length]}"></span><span class="text-muted-foreground">${t.type} <span class="font-bold font-mono text-foreground">${t.stokSPK}</span></span></div>`;
+      });
+      document.getElementById('chartStokLegend').innerHTML = legHtml;
+
+      // Progress Bars
+      let pBars = '';
+      s.zonaProgress.forEach(z => {
+        const p = pctNum(z.aktualProgress);
+        pBars += `
+          <div class="fade-in">
+            <div class="flex justify-between items-end mb-1.5">
+              <div>
+                <span class="text-xs font-bold text-foreground block">${z.zona}</span>
+                <span class="text-[10px] text-muted-foreground line-clamp-1" title="${z.kontraktor}">${z.kontraktor || '-'}</span>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold font-mono text-foreground">${p.toFixed(1)}%</span>
+                <div class="mt-0.5">${devBadge(z.deviasi)}</div>
+              </div>
+            </div>
+            ${progressBar(p, false)}
+          </div>
+        `;
+      });
+      document.getElementById('progressBars').innerHTML = pBars || '<p class="text-xs text-muted-foreground">Tidak ada zona aktif</p>';
+
+      // Render Tables, Siteplan, Changelog
+      renderTable();
+      renderRekapTable();
+      if (dataset.siteplan && dataset.siteplan.length > 0) renderSiteplan(dataset.siteplan.length - 1);
+      else document.getElementById('siteplanTabs').innerHTML = '<p class="text-xs text-muted-foreground">Tidak ada data siteplan</p>';
+      renderChangelog();
+    }
+
+    function renderTable() {
+      if (!currentDataset) return;
+      let data = [...currentDataset.zones];
+      
+      if (tableFilter === 'pengerjaan') data = data.filter(z => z.status.startsWith('5'));
+      else if (tableFilter === 'tender') data = data.filter(z => z.status.startsWith('2'));
+      else if (tableFilter === 'selesai') data = data.filter(z => z.status.startsWith('6'));
+      
+      data.sort((a, b) => {
+        let va = a[tableSort.key], vb = b[tableSort.key];
+        if (typeof va === 'string') return va.localeCompare(vb) * tableSort.dir;
+        return ((va||0) - (vb||0)) * tableSort.dir;
+      });
+      
+      const tbody = document.getElementById('zonaTableBody');
+      let html = '';
+      data.forEach(z => {
+        html += `
+          <tr class="zona-row hover:bg-muted/10">
+            <td class="px-4 py-2.5 font-semibold text-foreground">${z.zona}</td>
+            <td class="px-4 py-2.5 text-muted-foreground">${z.type || '-'}</td>
+            <td class="px-4 py-2.5 font-mono text-right font-medium">${z.stokSPK.toLocaleString()}</td>
+            <td class="px-4 py-2.5 font-mono text-right text-muted-foreground">${z.terjual.toLocaleString()}</td>
+            <td class="px-4 py-2.5 font-mono text-right font-medium text-amber-500">${z.sisaStok.toLocaleString()}</td>
+            <td class="px-4 py-2.5 font-mono text-right font-medium text-emerald-500">${z.funeralReady.toLocaleString()}</td>
+            <td class="px-4 py-2.5 font-mono text-right">${pctNum(z.pctReady).toFixed(1)}%</td>
+            <td class="px-4 py-2.5">${statusBadge(z.status)}</td>
+            <td class="px-4 py-2.5"><div class="truncate max-w-[150px]" title="${z.kontraktor}">${z.kontraktor || '-'}</div></td>
+            <td class="px-4 py-2.5">
+              <div class="flex items-center gap-2">
+                <span class="font-mono w-10 text-right">${pctNum(z.aktualProgress).toFixed(1)}%</span>
+                <div class="w-16">${progressBar(z.aktualProgress, true)}</div>
+              </div>
+            </td>
+            <td class="px-4 py-2.5">${devBadge(z.deviasi)}</td>
+            <td class="px-4 py-2.5 text-[10px] text-muted-foreground">
+              ${z.tglMulai ? `Mulai: ${z.tglMulai}<br>` : ''}${z.tglSelesai ? `Selesai: ${z.tglSelesai}` : ''}
+            </td>
+            <td class="px-4 py-2.5 text-center">
+              ${z.accMakam ? `<a href="${z.accMakam}" target="_blank" class="text-primary hover:underline text-[10px]">Lihat</a>` : '-'}
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html || '<tr><td colspan="13" class="px-4 py-4 text-center text-muted-foreground">Tidak ada data</td></tr>';
+    }
+
+    function renderRekapTable() {
+      if (!currentDataset) return;
+      const html = currentDataset.types.summary.map(t => `
+        <tr class="hover:bg-muted/10">
+          <td class="px-4 py-2.5 font-bold text-foreground">${t.type}</td>
+          <td class="px-4 py-2.5 font-mono text-right text-muted-foreground">${t.stokRencana.toLocaleString()}</td>
+          <td class="px-4 py-2.5 font-mono text-right font-medium">${t.stokSPK.toLocaleString()}</td>
+          <td class="px-4 py-2.5 font-mono text-right text-muted-foreground">${t.terjual.toLocaleString()}</td>
+          <td class="px-4 py-2.5 font-mono text-right text-amber-500 font-medium">${t.sisaStok.toLocaleString()}</td>
+          <td class="px-4 py-2.5 font-mono text-right text-emerald-500 font-medium">${t.funeralReady.toLocaleString()}</td>
+          <td class="px-4 py-2.5 font-mono text-right">${pctNum(t.pct).toFixed(1)}%</td>
+          <td class="px-4 py-2.5 font-mono text-right text-muted-foreground">${t.target.toLocaleString()}</td>
+          <td class="px-4 py-2.5 font-mono text-right text-muted-foreground">${t.selisih}</td>
+        </tr>
+      `).join('');
+      document.getElementById('rekapBody').innerHTML = html || '<tr><td colspan="9" class="px-4 py-4 text-center text-muted-foreground">Tidak ada data rekap</td></tr>';
+    }
+
+    function renderSiteplan(idx) {
+      if (!currentDataset || !currentDataset.siteplan) return;
+      const sp = currentDataset.siteplan;
+      let tabs = '';
+      sp.forEach((d, i) => {
+        tabs += `<button class="px-3 py-1 text-[11px] font-semibold rounded-full border border-border bg-card text-muted-foreground hover:bg-accent transition-colors ${i === idx ? 'bg-primary text-primary-foreground border-primary active' : ''}" onclick="renderSiteplan(${i})">${d.date}</button>`;
+      });
+      document.getElementById('siteplanTabs').innerHTML = tabs;
+
+      const items = sp[idx].items;
+      let content = '';
+      items.forEach(it => {
+        let badgeClass = it.status.toLowerCase().includes('sudah') ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-destructive/10 text-destructive border-destructive/20';
+        content += `
+          <div class="bg-card border border-border rounded-[calc(var(--radius)-4px)] p-3 flex flex-col items-center text-center fade-in">
+            <span class="text-xs font-bold text-foreground mb-2">${it.zona}</span>
+            <div class="w-full aspect-video bg-muted/30 rounded flex items-center justify-center mb-3 overflow-hidden border border-border/50">
+              ${it.foto && it.foto.toLowerCase() !== 'belum' ? `<a href="${it.foto}" target="_blank" class="text-xs text-primary hover:underline flex flex-col items-center"><svg class="w-6 h-6 mb-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Lihat Foto</a>` : '<span class="text-[10px] text-muted-foreground">Tidak ada foto</span>'}
+            </div>
+            <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-semibold border ${badgeClass}">${it.status}</span>
+          </div>
+        `;
+      });
+      document.getElementById('siteplanContent').innerHTML = content || '<p class="text-xs text-muted-foreground">Tidak ada item siteplan</p>';
+    }
+
+    function renderChangelog() {
+      if (!currentDataset || !currentDataset.changelog) return;
+      const html = currentDataset.changelog.map((log, i) => `
+        <div class="relative pl-6 pb-4 ${i !== currentDataset.changelog.length - 1 ? 'border-l border-border' : ''}">
+          <div class="absolute left-[-4.5px] top-1.5 w-2 h-2 rounded-full bg-primary ring-4 ring-card"></div>
+          <p class="text-xs font-bold text-foreground font-mono mb-1">${log.date}</p>
+          <p class="text-[11px] text-muted-foreground whitespace-pre-wrap">${log.desc}</p>
+        </div>
+      `).join('');
+      document.getElementById('changelogContent').innerHTML = html || '<p class="text-xs text-muted-foreground">Tidak ada changelog</p>';
+    }
+
+    function showToast(msg, duration) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), duration || 3000);
+    }
+
+    // Events
+    document.getElementById('uploadBtn').addEventListener('click', () => document.getElementById('excelFileInput').click());
+    document.getElementById('dropZone').addEventListener('click', () => document.getElementById('excelFileInput').click());
+    
+    document.getElementById('excelFileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      handleFile(file);
+      e.target.value = '';
+    });
+
+    function handleFile(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const dataset = parseExcelFile(e.target.result, file.name);
+          addToHistory(dataset);
+          updateHistoryDropdown();
+          renderDashboard(dataset);
+          showToast('Data berhasil dimuat');
+        } catch (err) {
+          console.error(err);
+          showToast('Gagal memproses file Excel', 5000);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Drag and Drop
+    const overlay = document.getElementById('dropOverlay');
+    let dragCounter = 0;
+    
+    window.addEventListener('dragenter', e => {
+      e.preventDefault();
+      dragCounter++;
+      overlay.classList.add('active');
+    });
+    window.addEventListener('dragleave', e => {
+      e.preventDefault();
+      dragCounter--;
+      if (dragCounter === 0) overlay.classList.remove('active');
+    });
+    window.addEventListener('dragover', e => e.preventDefault());
+    window.addEventListener('drop', e => {
+      e.preventDefault();
+      dragCounter = 0;
+      overlay.classList.remove('active');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+
+    // History switch
+    document.getElementById('historySelect').addEventListener('change', e => {
+      const id = parseInt(e.target.value);
+      const list = getHistory();
+      const dataset = list.find(h => h.id === id);
+      if (dataset) renderDashboard(dataset);
+    });
+
+    // Filters
+    document.querySelectorAll('#tableFilters .tab-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        document.querySelectorAll('#tableFilters .tab-btn').forEach(b => {
+          b.classList.remove('active', 'bg-primary', 'text-primary-foreground');
+          b.classList.add('bg-card', 'text-muted-foreground');
+        });
+        e.target.classList.add('active', 'bg-primary', 'text-primary-foreground');
+        e.target.classList.remove('bg-card', 'text-muted-foreground');
+        tableFilter = e.target.dataset.filter;
+        renderTable();
+      });
+    });
+
+    // Sorting
+    document.querySelectorAll('#zonaTable th[data-sort]').forEach(th => {
+      th.addEventListener('click', e => {
+        const key = th.dataset.sort;
+        if (tableSort.key === key) tableSort.dir *= -1;
+        else { tableSort.key = key; tableSort.dir = 1; }
+        renderTable();
+      });
+    });
+
+    // Theme toggle
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+
+    // Init
+    if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
+    const historyList = getHistory();
+    if (historyList.length > 0) {
+      updateHistoryDropdown();
+      renderDashboard(historyList[historyList.length - 1]);
+    } else {
+      document.getElementById('uploadScreen').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
